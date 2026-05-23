@@ -1,0 +1,118 @@
+{
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "username": "Username",
+    "password": "Password",
+    "enterUsername": "Enter your username",
+    "enterPassword": "Enter your password",
+    "pleaseWait": "Please wait...",
+    "dontHaveAccount": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?",
+    "fillAllFields": "Please fill in all fields"
+  },
+  "success": {
+    "registrationSuccess": "Registration successful! Redirecting to dashboard...",
+    "loginSuccess": "Login successful!"
+  },
+  "errors": {
+    "genericError": "An error occurred. Please try again.",
+    "loadDashboard": "Failed to load dashboard data",
+    "loadUsers": "Failed to load users"
+  },
+  "dashboard": {
+    "welcome": "Welcome",
+    "logout": "Logout",
+    "dashboard": "Dashboard",
+    "allUsers": "All Users",
+    "loading": "Loading...",
+    "noUsers": "No users found.",
+    "protectedRoute": "Protected Route Information",
+    "protectedDescription": "This page is protected by an authentication guard. Only authenticated users with a valid JWT token can access this route.",
+    "featuresTitle": "Features demonstrated:",
+    "feature1": "Bearer token authentication",
+    "feature2": "Auth guard protecting routes",
+    "feature3": "HTTP interceptor adding token to requests",
+    "feature4": "Secure token storage in localStorage",
+    "feature5": "Automatic logout on token expiration"
+  },
+  "menu": {
+    "dashboard": "Dashboard",
+    "users": "User Management",
+    "moderation": "Moderation",
+    "reports": "Reports",
+    "logs": "System Logs",
+    "settings": "Settings"
+  },
+  "users": {
+    "title": "User Management",
+    "subtitle": "Manage system users and their access levels",
+    "username": "Username",
+    "userLevel": "User Level",
+    "createdAt": "Created At",
+    "actions": "Actions",
+    "edit": "Edit",
+    "changeLevel": "Change Level",
+    "you": "You",
+    "changeLevelTitle": "Change User Level",
+    "currentLevel": "Current Level",
+    "newLevel": "New Level",
+    "cancel": "Cancel",
+    "save": "Save Changes",
+    "updating": "Updating...",
+    "levelDescUser": "Basic access to the system",
+    "levelDescModerator": "Can moderate content and access reports",
+    "levelDescAdmin": "Full system access and user management"
+  },
+  "moderation": {
+    "title": "Moderation Panel",
+    "subtitle": "Content moderation and management tools",
+    "description": "This is the moderation dashboard where moderators and administrators can manage content and user reports."
+  },
+  "reports": {
+    "title": "Reports & Analytics",
+    "subtitle": "View system reports and analytics",
+    "totalReports": "Total Reports",
+    "pending": "Pending",
+    "resolved": "Resolved"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your account and preferences",
+    "account": "Account Information",
+    "username": "Username",
+    "userLevel": "User Level",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm New Password",
+    "changePasswordBtn": "Change Password",
+    "changing": "Changing...",
+    "preferences": "Preferences",
+    "comingSoon": "Additional settings coming soon..."
+  },
+  "logs": {
+    "title": "System Logs",
+    "subtitle": "View and search application logs",
+    "level": "Level",
+    "category": "Category",
+    "search": "Search",
+    "searchPlaceholder": "Search by message or username",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "allLevels": "All Levels",
+    "allCategories": "All Categories",
+    "applyFilters": "Apply Filters",
+    "clearFilters": "Clear Filters",
+    "totalLogs": "Total Logs",
+    "page": "Page",
+    "of": "of",
+    "timestamp": "Timestamp",
+    "message": "Message",
+    "username": "Username",
+    "ip": "IP Address",
+    "noLogs": "No logs found",
+    "previous": "Previous",
+    "next": "Next"
+  }
+}

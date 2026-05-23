@@ -1,0 +1,12 @@
+.content {
+  padding: 2rem;
+}
+
+.user-badge-small {
+  margin-left: 10px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.75em;
+  background-color: #e9ecef;
+  color: #495057;
+}

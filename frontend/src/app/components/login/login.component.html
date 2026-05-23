@@ -1,0 +1,52 @@
+<div class="auth-container">
+  <div class="card">
+    <h1>{{ (isLoginMode ? 'auth.login' : 'auth.register') | translate }}</h1>
+    
+    <div *ngIf="errorMessage" class="error">
+      {{ errorMessage }}
+    </div>
+    
+    <div *ngIf="successMessage" class="success">
+      {{ successMessage }}
+    </div>
+
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="username">{{ 'auth.username' | translate }}</label>
+        <input 
+          type="text" 
+          id="username" 
+          [(ngModel)]="username" 
+          name="username"
+          required
+          [disabled]="loading"
+          [placeholder]="'auth.enterUsername' | translate"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">{{ 'auth.password' | translate }}</label>
+        <input 
+          type="password" 
+          id="password" 
+          [(ngModel)]="password" 
+          name="password"
+          required
+          [disabled]="loading"
+          [placeholder]="'auth.enterPassword' | translate"
+        />
+      </div>
+
+      <button type="submit" [disabled]="loading">
+        {{ (loading ? 'auth.pleaseWait' : (isLoginMode ? 'auth.login' : 'auth.register')) | translate }}
+      </button>
+    </form>
+
+    <div class="text-center mt-2">
+      <span>{{ (isLoginMode ? 'auth.dontHaveAccount' : 'auth.alreadyHaveAccount') | translate }}</span>
+      <a class="link" (click)="toggleMode()">
+        {{ (isLoginMode ? 'auth.register' : 'auth.login') | translate }}
+      </a>
+    </div>
+  </div>
+</div>

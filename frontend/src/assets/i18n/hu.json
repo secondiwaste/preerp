@@ -1,0 +1,118 @@
+{
+  "auth": {
+    "login": "Bejelentkezés",
+    "register": "Regisztráció",
+    "username": "Felhasználónév",
+    "password": "Jelszó",
+    "enterUsername": "Adja meg felhasználónevét",
+    "enterPassword": "Adja meg jelszavát",
+    "pleaseWait": "Kérem várjon...",
+    "dontHaveAccount": "Még nincs fiókja?",
+    "alreadyHaveAccount": "Már van fiókja?",
+    "fillAllFields": "Kérjük, töltse ki az összes mezőt"
+  },
+  "success": {
+    "registrationSuccess": "Sikeres regisztráció! Átirányítás a vezérlőpultra...",
+    "loginSuccess": "Sikeres bejelentkezés!"
+  },
+  "errors": {
+    "genericError": "Hiba történt. Kérjük, próbálja újra.",
+    "loadDashboard": "Vezérlőpult betöltése sikertelen",
+    "loadUsers": "Felhasználók betöltése sikertelen"
+  },
+  "dashboard": {
+    "welcome": "Üdvözöljük",
+    "logout": "Kijelentkezés",
+    "dashboard": "Vezérlőpult",
+    "allUsers": "Minden felhasználó",
+    "loading": "Betöltés...",
+    "noUsers": "Nincs felhasználó.",
+    "protectedRoute": "Védett útvonal információ",
+    "protectedDescription": "Ez az oldal hitelesítési őr védi. Csak hitelesített felhasználók férhetnek hozzá érvényes JWT tokennel.",
+    "featuresTitle": "Bemutatott funkciók:",
+    "feature1": "Bearer token hitelesítés",
+    "feature2": "Auth guard útvonalak védelme",
+    "feature3": "HTTP interceptor token hozzáadása kérésekhez",
+    "feature4": "Biztonságos token tárolás localStorage-ban",
+    "feature5": "Automatikus kijelentkezés token lejáratkor"
+  },
+  "menu": {
+    "dashboard": "Vezérlőpult",
+    "users": "Felhasználók kezelése",
+    "moderation": "Moderálás",
+    "reports": "Jelentések",
+    "logs": "Rendszer naplók",
+    "settings": "Beállítások"
+  },
+  "users": {
+    "title": "Felhasználók kezelése",
+    "subtitle": "Rendszer felhasználók és hozzáférési szintek kezelése",
+    "username": "Felhasználónév",
+    "userLevel": "Felhasználói szint",
+    "createdAt": "Létrehozva",
+    "actions": "Műveletek",
+    "edit": "Szerkesztés",
+    "changeLevel": "Szint módosítása",
+    "you": "Te",
+    "changeLevelTitle": "Felhasználói szint módosítása",
+    "currentLevel": "Jelenlegi szint",
+    "newLevel": "Új szint",
+    "cancel": "Mégse",
+    "save": "Mentés",
+    "updating": "Frissítés...",
+    "levelDescUser": "Alap hozzáférés a rendszerhez",
+    "levelDescModerator": "Tartalommoderálás és jelentések elérése",
+    "levelDescAdmin": "Teljes rendszer hozzáférés és felhasználó kezelés"
+  },
+  "moderation": {
+    "title": "Moderálási panel",
+    "subtitle": "Tartalom moderálási és kezelési eszközök",
+    "description": "Ez a moderálási vezérlőpult, ahol a moderátorok és adminisztrátorok kezelhetik a tartalmat és felhasználói jelentéseket."
+  },
+  "reports": {
+    "title": "Jelentések és elemzések",
+    "subtitle": "Rendszer jelentések és elemzések megtekintése",
+    "totalReports": "Összes jelentés",
+    "pending": "Függőben",
+    "resolved": "Megoldva"
+  },
+  "settings": {
+    "title": "Beállítások",
+    "subtitle": "Fiók és preferenciák kezelése",
+    "account": "Fiók információk",
+    "username": "Felhasználónév",
+    "userLevel": "Felhasználói szint",
+    "changePassword": "Jelszó megváltoztatása",
+    "currentPassword": "Jelenlegi jelszó",
+    "newPassword": "Új jelszó",
+    "confirmPassword": "Új jelszó megerősítése",
+    "changePasswordBtn": "Jelszó megváltoztatása",
+    "changing": "Módosítás...",
+    "preferences": "Preferenciák",
+    "comingSoon": "További beállítások hamarosan..."
+  },
+  "logs": {
+    "title": "Rendszer naplók",
+    "subtitle": "Alkalmazás naplók megtekintése és keresése",
+    "level": "Szint",
+    "category": "Kategória",
+    "search": "Keresés",
+    "searchPlaceholder": "Keresés üzenet vagy felhasználónév alapján",
+    "startDate": "Kezdő dátum",
+    "endDate": "Befejező dátum",
+    "allLevels": "Minden szint",
+    "allCategories": "Minden kategória",
+    "applyFilters": "Szűrők alkalmazása",
+    "clearFilters": "Szűrők törlése",
+    "totalLogs": "Összes napló",
+    "page": "Oldal",
+    "of": "/",
+    "timestamp": "Időbélyeg",
+    "message": "Üzenet",
+    "username": "Felhasználónév",
+    "ip": "IP cím",
+    "noLogs": "Nincs napló bejegyzés",
+    "previous": "Előző",
+    "next": "Következő"
+  }
+}

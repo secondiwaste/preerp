@@ -1,0 +1,58 @@
+{
+  "auth": {
+    "validation": {
+      "usernameLength": "Username must be between 3 and 50 characters",
+      "passwordLength": "Password must be at least 6 characters long",
+      "usernameRequired": "Username is required",
+      "passwordRequired": "Password is required"
+    },
+    "errors": {
+      "usernameExists": "Username already exists",
+      "invalidCredentials": "Invalid username or password",
+      "userNotFound": "User not found",
+      "internalError": "Internal server error",
+      "noToken": "Access denied. No token provided.",
+      "invalidSession": "Invalid or expired session. Please login again.",
+      "invalidToken": "Invalid token.",
+      "tokenExpired": "Token expired.",
+      "insufficientPrivileges": "Access denied. Insufficient privileges.",
+      "missingFields": "Missing required fields",
+      "incorrectPassword": "Current password is incorrect"
+    },
+    "success": {
+      "registered": "User registered successfully",
+      "loginSuccess": "Login successful",
+      "logoutSuccess": "Logout successful",
+      "passwordChanged": "Password changed successfully"
+    },
+    "logging": {
+      "requestReceived": "Request received",
+      "username": "Username",
+      "requestIp": "Request IP",
+      "validationFailed": "Validation failed",
+      "validationPassed": "Validation passed for username",
+      "checkingUserExists": "Checking if user exists",
+      "userAlreadyExists": "User already exists",
+      "usernameAvailable": "Username available",
+      "creatingUser": "Creating new user",
+      "userCreated": "User created successfully, ID",
+      "generatingToken": "Generating JWT token for user ID",
+      "tokenGenerated": "Token generated successfully",
+      "registrationCompleted": "Registration completed successfully for",
+      "lookingUpUser": "Looking up user",
+      "userNotFoundLog": "User not found",
+      "userFound": "User found, ID",
+      "verifyingPassword": "Verifying password for user",
+      "invalidPassword": "Invalid password for user",
+      "passwordVerified": "Password verified successfully",
+      "loginSuccessfulLog": "Login successful for user",
+      "fetchingProfile": "Fetching user profile for ID",
+      "profileRetrieved": "User profile retrieved",
+      "errorOccurred": "Error occurred",
+      "errorName": "Error name",
+      "errorMessage": "Error message",
+      "errorCode": "Error code",
+      "stackTrace": "Stack trace"
+    }
+  }
+}

@@ -1,0 +1,150 @@
+<div class="container">
+  <app-navbar></app-navbar>
+  
+  <div class="content">
+    <div class="card">
+      <h2>{{ 'logs.title' | translate }}</h2>
+      <p class="subtitle">{{ 'logs.subtitle' | translate }}</p>
+      
+      <!-- Filters -->
+      <div class="filters-section">
+        <div class="filters-grid">
+          <div class="filter-group">
+            <label>{{ 'logs.level' | translate }}</label>
+            <select [(ngModel)]="selectedLevel" class="filter-select">
+              <option value="">{{ 'logs.allLevels' | translate }}</option>
+              <option *ngFor="let level of levels" [value]="level">{{ level }}</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label>{{ 'logs.category' | translate }}</label>
+            <select [(ngModel)]="selectedCategory" class="filter-select">
+              <option value="">{{ 'logs.allCategories' | translate }}</option>
+              <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label>{{ 'logs.search' | translate }}</label>
+            <input 
+              type="text" 
+              [(ngModel)]="searchText" 
+              class="filter-input"
+              [placeholder]="'logs.searchPlaceholder' | translate"
+            />
+          </div>
+          
+          <div class="filter-group">
+            <label>{{ 'logs.startDate' | translate }}</label>
+            <input 
+              type="datetime-local" 
+              [(ngModel)]="startDate" 
+              class="filter-input"
+            />
+          </div>
+          
+          <div class="filter-group">
+            <label>{{ 'logs.endDate' | translate }}</label>
+            <input 
+              type="datetime-local" 
+              [(ngModel)]="endDate" 
+              class="filter-input"
+            />
+          </div>
+        </div>
+        
+        <div class="filter-actions">
+          <button class="btn-primary" (click)="applyFilters()">
+            {{ 'logs.applyFilters' | translate }}
+          </button>
+          <button class="btn-secondary" (click)="clearFilters()">
+            {{ 'logs.clearFilters' | translate }}
+          </button>
+        </div>
+      </div>
+      
+      <!-- Loading -->
+      <div *ngIf="loading" class="loading">{{ 'dashboard.loading' | translate }}</div>
+      
+      <!-- Logs Table -->
+      <div *ngIf="!loading" class="logs-section">
+        <div class="logs-info">
+          <span>{{ 'logs.totalLogs' | translate }}: <strong>{{ totalLogs }}</strong></span>
+          <span>{{ 'logs.page' | translate }} {{ currentPage }} {{ 'logs.of' | translate }} {{ totalPages }}</span>
+        </div>
+        
+        <div class="logs-table">
+          <table>
+            <thead>
+              <tr>
+                <th>{{ 'logs.timestamp' | translate }}</th>
+                <th>{{ 'logs.level' | translate }}</th>
+                <th>{{ 'logs.category' | translate }}</th>
+                <th>{{ 'logs.message' | translate }}</th>
+                <th>{{ 'logs.username' | translate }}</th>
+                <th>{{ 'logs.ip' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let log of logs" [class]="getLevelClass(log.level)">
+                <td class="timestamp">{{ formatDate(log.timestamp) }}</td>
+                <td>
+                  <span class="level-badge" [class]="getLevelClass(log.level)">
+                    {{ log.level }}
+                  </span>
+                </td>
+                <td class="category">{{ log.category }}</td>
+                <td class="message">
+                  {{ log.message }}
+                  <button 
+                    *ngIf="log.metadata" 
+                    class="metadata-btn"
+                    (click)="expandMetadata(log)"
+                    title="View metadata"
+                  >
+                    [...]
+                  </button>
+                </td>
+                <td>{{ log.username || '-' }}</td>
+                <td class="ip">{{ log.ip_address || '-' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div *ngIf="logs.length === 0" class="no-logs">
+          {{ 'logs.noLogs' | translate }}
+        </div>
+        
+        <!-- Pagination -->
+        <div *ngIf="totalPages > 1" class="pagination">
+          <button 
+            class="page-btn" 
+            (click)="previousPage()" 
+            [disabled]="currentPage === 1"
+          >
+            &laquo; {{ 'logs.previous' | translate }}
+          </button>
+          
+          <button 
+            *ngFor="let page of getPageNumbers()"
+            class="page-btn"
+            [class.active]="page === currentPage"
+            (click)="goToPage(page)"
+          >
+            {{ page }}
+          </button>
+          
+          <button 
+            class="page-btn" 
+            (click)="nextPage()" 
+            [disabled]="currentPage === totalPages"
+          >
+            {{ 'logs.next' | translate }} &raquo;
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

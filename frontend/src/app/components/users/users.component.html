@@ -1,0 +1,113 @@
+<div class="container">
+  <app-navbar></app-navbar>
+  
+  <div class="content">
+    <div class="card">
+      <h2>{{ 'users.title' | translate }}</h2>
+      <p class="subtitle">{{ 'users.subtitle' | translate }}</p>
+      
+      <div *ngIf="loading" class="loading">{{ 'dashboard.loading' | translate }}</div>
+      
+      <div *ngIf="!loading && users.length > 0" class="users-table">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>{{ 'users.username' | translate }}</th>
+              <th>{{ 'users.userLevel' | translate }}</th>
+              <th>{{ 'users.createdAt' | translate }}</th>
+              <th>{{ 'users.actions' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of users">
+              <td>{{ user.id }}</td>
+              <td>
+                <strong>{{ user.username }}</strong>
+                <span *ngIf="user.id === currentUserId" class="current-user-badge">
+                  ({{ 'users.you' | translate }})
+                </span>
+              </td>
+              <td>
+                <span class="level-badge" [class]="user.user_level">
+                  {{ user.user_level || 'user' }}
+                </span>
+              </td>
+              <td>{{ formatDate(user.created_at) }}</td>
+              <td>
+                <button 
+                  class="btn-small" 
+                  (click)="openEditModal(user)"
+                  [disabled]="user.id === currentUserId"
+                >
+                  {{ 'users.changeLevel' | translate }}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <p *ngIf="!loading && users.length === 0">{{ 'dashboard.noUsers' | translate }}</p>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="modal-overlay" *ngIf="showEditModal" (click)="closeEditModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ 'users.changeLevelTitle' | translate }}</h3>
+        <button class="close-btn" (click)="closeEditModal()">&times;</button>
+      </div>
+      
+      <div class="modal-body" *ngIf="selectedUser">
+        <div class="user-info">
+          <p><strong>{{ 'users.username' | translate }}:</strong> {{ selectedUser.username }}</p>
+          <p><strong>{{ 'users.currentLevel' | translate }}:</strong> 
+            <span class="level-badge" [class]="selectedUser.user_level">
+              {{ selectedUser.user_level || 'user' }}
+            </span>
+          </p>
+        </div>
+
+        <div class="form-group">
+          <label for="newLevel">{{ 'users.newLevel' | translate }}</label>
+          <select 
+            id="newLevel" 
+            [(ngModel)]="newUserLevel" 
+            class="form-select"
+          >
+            <option value="user">user</option>
+            <option value="moderator">moderator</option>
+            <option value="administrator">administrator</option>
+          </select>
+        </div>
+
+        <div class="level-descriptions">
+          <div class="level-desc">
+            <strong>user:</strong> {{ 'users.levelDescUser' | translate }}
+          </div>
+          <div class="level-desc">
+            <strong>moderator:</strong> {{ 'users.levelDescModerator' | translate }}
+          </div>
+          <div class="level-desc">
+            <strong>administrator:</strong> {{ 'users.levelDescAdmin' | translate }}
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="closeEditModal()">
+          {{ 'users.cancel' | translate }}
+        </button>
+        <button 
+          class="btn-primary" 
+          (click)="saveUserLevel()" 
+          [disabled]="updating || newUserLevel === selectedUser?.user_level"
+        >
+          {{ updating ? ('users.updating' | translate) : ('users.save' | translate) }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

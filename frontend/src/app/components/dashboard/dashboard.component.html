@@ -1,0 +1,40 @@
+<div class="container">
+  <app-navbar></app-navbar>
+
+  <div class="content">
+    <div class="dashboard-grid">
+      <div class="card">
+        <h2>{{ 'dashboard.dashboard' | translate }}</h2>
+        <p *ngIf="dashboardMessage">{{ dashboardMessage }}</p>
+        <p *ngIf="loading" class="loading">{{ 'dashboard.loading' | translate }}</p>
+      </div>
+
+      <div class="card" *ngIf="isAdmin">
+        <h2>{{ 'dashboard.allUsers' | translate }}</h2>
+        <p *ngIf="loadingUsers" class="loading">{{ 'dashboard.loading' | translate }}</p>
+        <div *ngIf="!loadingUsers && users.length > 0">
+          <ul style="list-style: none; padding: 0;">
+            <li *ngFor="let user of users" style="padding: 10px; border-bottom: 1px solid #eee;">
+              <strong>{{ user.username }}</strong> (ID: {{ user.id }})
+              <span class="user-badge-small">{{ user.user_level || 'user' }}</span>
+            </li>
+          </ul>
+        </div>
+        <p *ngIf="!loadingUsers && users.length === 0">{{ 'dashboard.noUsers' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="card mt-2">
+      <h3>{{ 'dashboard.protectedRoute' | translate }}</h3>
+      <p>{{ 'dashboard.protectedDescription' | translate }}</p>
+      <p><strong>{{ 'dashboard.featuresTitle' | translate }}</strong></p>
+      <ul>
+        <li>{{ 'dashboard.feature1' | translate }}</li>
+        <li>{{ 'dashboard.feature2' | translate }}</li>
+        <li>{{ 'dashboard.feature3' | translate }}</li>
+        <li>{{ 'dashboard.feature4' | translate }}</li>
+        <li>{{ 'dashboard.feature5' | translate }}</li>
+      </ul>
+    </div>
+  </div>
+</div>

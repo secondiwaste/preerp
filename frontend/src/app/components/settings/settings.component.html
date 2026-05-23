@@ -1,0 +1,85 @@
+<div class="container">
+  <app-navbar></app-navbar>
+  
+  <div class="content">
+    <div class="card">
+      <h2>{{ 'settings.title' | translate }}</h2>
+      <p class="subtitle">{{ 'settings.subtitle' | translate }}</p>
+      
+      <div class="settings-section">
+        <h3>{{ 'settings.account' | translate }}</h3>
+        <div class="setting-item">
+          <label>{{ 'settings.username' | translate }}</label>
+          <div class="value">{{ currentUser?.username }}</div>
+        </div>
+        <div class="setting-item">
+          <label>{{ 'settings.userLevel' | translate }}</label>
+          <div class="value">
+            <span class="level-badge" [class]="currentUser?.user_level">
+              {{ currentUser?.user_level || 'user' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3>{{ 'settings.changePassword' | translate }}</h3>
+        <form (ngSubmit)="changePassword()">
+          <div class="form-group">
+            <label for="currentPassword">{{ 'settings.currentPassword' | translate }}</label>
+            <input 
+              type="password" 
+              id="currentPassword" 
+              [(ngModel)]="currentPassword"
+              name="currentPassword"
+              [disabled]="changingPassword"
+              class="form-input"
+              autocomplete="current-password"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="newPassword">{{ 'settings.newPassword' | translate }}</label>
+            <input 
+              type="password" 
+              id="newPassword" 
+              [(ngModel)]="newPassword"
+              name="newPassword"
+              [disabled]="changingPassword"
+              class="form-input"
+              autocomplete="new-password"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword">{{ 'settings.confirmPassword' | translate }}</label>
+            <input 
+              type="password" 
+              id="confirmPassword" 
+              [(ngModel)]="confirmPassword"
+              name="confirmPassword"
+              [disabled]="changingPassword"
+              class="form-input"
+              autocomplete="new-password"
+            />
+          </div>
+
+          <button 
+            type="submit" 
+            class="btn-primary"
+            [disabled]="changingPassword || !currentPassword || !newPassword || !confirmPassword"
+          >
+            {{ changingPassword ? ('settings.changing' | translate) : ('settings.changePasswordBtn' | translate) }}
+          </button>
+        </form>
+      </div>
+
+      <div class="settings-section">
+        <h3>{{ 'settings.preferences' | translate }}</h3>
+        <div class="info-box">
+          <p>{{ 'settings.comingSoon' | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

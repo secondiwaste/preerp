@@ -1,0 +1,51 @@
+<nav class="navbar">
+  <div class="navbar-left">
+    <button class="hamburger-btn" (click)="toggleMenu()" [class.active]="isMenuOpen">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <div class="navbar-brand" [routerLink]="['/dashboard']">PreERP</div>
+    
+    <!-- Dropdown Menu -->
+    <div class="dropdown-menu" [class.open]="isMenuOpen">
+      <div class="menu-section" *ngFor="let item of visibleMenuItems">
+        <a 
+          *ngIf="!item.children"
+          [routerLink]="[item.route]" 
+          class="menu-item"
+          routerLinkActive="active"
+          (click)="closeMenu()"
+        >
+          <span class="menu-icon" *ngIf="item.icon">{{ item.icon }}</span>
+          {{ item.label | translate }}
+        </a>
+        
+        <!-- Submenu -->
+        <div *ngIf="item.children" class="menu-group">
+          <div class="menu-group-label">{{ item.label | translate }}</div>
+          <a 
+            *ngFor="let child of item.children"
+            [routerLink]="[child.route]" 
+            class="menu-item submenu-item"
+            routerLinkActive="active"
+            (click)="closeMenu()"
+          >
+            <span class="menu-icon" *ngIf="child.icon">{{ child.icon }}</span>
+            {{ child.label | translate }}
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Overlay -->
+    <div class="menu-overlay" *ngIf="isMenuOpen" (click)="closeMenu()"></div>
+  </div>
+  
+  <div class="navbar-user">
+    <span class="user-info">
+      {{ 'dashboard.welcome' | translate }}, <a [routerLink]="['/settings']" class="username-link">{{ currentUser?.username }}</a>!
+    </span>
+    <button class="logout-btn" (click)="logout()">{{ 'dashboard.logout' | translate }}</button>
+  </div>
+</nav>

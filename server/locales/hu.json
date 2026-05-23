@@ -1,0 +1,58 @@
+{
+  "auth": {
+    "validation": {
+      "usernameLength": "A felhasználónévnek 3 és 50 karakter között kell lennie",
+      "passwordLength": "A jelszónak legalább 6 karakter hosszúnak kell lennie",
+      "usernameRequired": "Felhasználónév megadása kötelező",
+      "passwordRequired": "Jelszó megadása kötelező"
+    },
+    "errors": {
+      "usernameExists": "A felhasználónév már létezik",
+      "invalidCredentials": "Érvénytelen felhasználónév vagy jelszó",
+      "userNotFound": "Felhasználó nem található",
+      "internalError": "Belső szerverhiba",
+      "noToken": "Hozzáférés megtagadva. Nincs token megadva.",
+      "invalidSession": "Érvénytelen vagy lejárt munkamenet. Kérjük, jelentkezzen be újra.",
+      "invalidToken": "Érvénytelen token.",
+      "tokenExpired": "Token lejárt.",
+      "insufficientPrivileges": "Hozzáférés megtagadva. Nincs megfelelő jogosultság.",
+      "missingFields": "Hiányzó kötelező mezők",
+      "incorrectPassword": "A jelenlegi jelszó helytelen"
+    },
+    "success": {
+      "registered": "Felhasználó sikeresen regisztrálva",
+      "loginSuccess": "Sikeres bejelentkezés",
+      "logoutSuccess": "Sikeres kijelentkezés",
+      "passwordChanged": "Jelszó sikeresen megváltoztatva"
+    },
+    "logging": {
+      "requestReceived": "Kérés érkezett",
+      "username": "Felhasználónév",
+      "requestIp": "Kérés IP címe",
+      "validationFailed": "Érvényesítés sikertelen",
+      "validationPassed": "Érvényesítés sikeres felhasználónévhez",
+      "checkingUserExists": "Felhasználó létezésének ellenőrzése",
+      "userAlreadyExists": "Felhasználó már létezik",
+      "usernameAvailable": "Felhasználónév elérhető",
+      "creatingUser": "Új felhasználó létrehozása",
+      "userCreated": "Felhasználó sikeresen létrehozva, ID",
+      "generatingToken": "JWT token generálása felhasználó ID-hoz",
+      "tokenGenerated": "Token sikeresen generálva",
+      "registrationCompleted": "Regisztráció sikeresen befejezve",
+      "lookingUpUser": "Felhasználó keresése",
+      "userNotFoundLog": "Felhasználó nem található",
+      "userFound": "Felhasználó megtalálva, ID",
+      "verifyingPassword": "Jelszó ellenőrzése felhasználóhoz",
+      "invalidPassword": "Érvénytelen jelszó a felhasználóhoz",
+      "passwordVerified": "Jelszó sikeresen ellenőrizve",
+      "loginSuccessfulLog": "Sikeres bejelentkezés felhasználó",
+      "fetchingProfile": "Felhasználói profil lekérése ID-hoz",
+      "profileRetrieved": "Felhasználói profil lekérve",
+      "errorOccurred": "Hiba történt",
+      "errorName": "Hiba neve",
+      "errorMessage": "Hibaüzenet",
+      "errorCode": "Hibakód",
+      "stackTrace": "Veremkivonat"
+    }
+  }
+}
