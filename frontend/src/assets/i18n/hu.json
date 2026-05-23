@@ -18,7 +18,8 @@
   "errors": {
     "genericError": "Hiba történt. Kérjük, próbálja újra.",
     "loadDashboard": "Vezérlőpult betöltése sikertelen",
-    "loadUsers": "Felhasználók betöltése sikertelen"
+    "loadUsers": "Felhasználók betöltése sikertelen",
+    "accountDisabled": "Az Ön fiókja le lett tiltva. Kérjük, forduljon egy adminisztrátorhoz."
   },
   "dashboard": {
     "welcome": "Üdvözöljük",
@@ -46,13 +47,17 @@
   },
   "users": {
     "title": "Felhasználók kezelése",
-    "subtitle": "Rendszer felhasználók és hozzáférési szintek kezelése",
-    "username": "Felhasználónév",
+    "subtitle": "Rendszer felhasználók és hozzáférési szintek kezelése",    "searchPlaceholder": "Keresés felhasználónév alapján...",    "username": "Felhasználónév",
     "userLevel": "Felhasználói szint",
+    "status": "Állapot",
+    "active": "Aktív",
+    "disabled": "Letiltva",
     "createdAt": "Létrehozva",
     "actions": "Műveletek",
     "edit": "Szerkesztés",
     "changeLevel": "Szint módosítása",
+    "enable": "Engedélyezés",
+    "disable": "Letiltás",
     "you": "Te",
     "changeLevelTitle": "Felhasználói szint módosítása",
     "currentLevel": "Jelenlegi szint",
@@ -60,6 +65,8 @@
     "cancel": "Mégse",
     "save": "Mentés",
     "updating": "Frissítés...",
+    "confirmDisable": "Biztosan letiltja {username} felhasználót?",
+    "confirmEnable": "Biztosan engedélyezi {username} felhasználót?",
     "levelDescUser": "Alap hozzáférés a rendszerhez",
     "levelDescModerator": "Tartalommoderálás és jelentések elérése",
     "levelDescAdmin": "Teljes rendszer hozzáférés és felhasználó kezelés"

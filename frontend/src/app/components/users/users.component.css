@@ -53,6 +53,46 @@ tbody tr:hover {
   background: #f9f9f9;
 }
 
+.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortable:hover {
+  background: #f0f0f0;
+}
+
+.sort-icon {
+  display: inline-block;
+  margin-left: 0.3rem;
+  color: #999;
+  font-size: 0.9rem;
+}
+
+.search-box {
+  margin-bottom: 1.5rem;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 0.6rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+td:last-child {
+  white-space: nowrap;
+  width: 1%;
+}
+
 .level-badge {
   display: inline-block;
   padding: 4px 12px;
@@ -84,14 +124,22 @@ tbody tr:hover {
 }
 
 .btn-small {
-  padding: 0.4rem 1rem;
+  padding: 0.25rem 0.4rem;
   background: #667eea;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   transition: background 0.2s;
+  margin-left: 0.3rem;
+  white-space: nowrap;
+  display: inline-block;
+  width: auto;
+}
+
+.btn-small:first-child {
+  margin-left: 0;
 }
 
 .btn-small:hover:not(:disabled) {
@@ -101,6 +149,48 @@ tbody tr:hover {
 .btn-small:disabled {
   background: #ccc;
   cursor: not-allowed;
+}
+
+.btn-small.btn-danger {
+  background: #dc3545;
+  margin-left: 0.3rem;
+}
+
+.btn-small.btn-danger:hover:not(:disabled) {
+  background: #c82333;
+}
+
+.btn-small.btn-success {
+  background: #28a745;
+  margin-left: 0.3rem;
+}
+
+.btn-small.btn-success:hover:not(:disabled) {
+  background: #218838;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-badge.disabled {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+tbody tr.disabled-row {
+  opacity: 0.6;
+  background: #f8f9fa;
+}
+
+tbody tr.disabled-row:hover {
+  background: #e9ecef;
 }
 
 /* Modal Styles */

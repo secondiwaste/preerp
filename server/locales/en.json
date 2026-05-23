@@ -17,7 +17,8 @@
       "tokenExpired": "Token expired.",
       "insufficientPrivileges": "Access denied. Insufficient privileges.",
       "missingFields": "Missing required fields",
-      "incorrectPassword": "Current password is incorrect"
+      "incorrectPassword": "Current password is incorrect",
+      "accountDisabled": "Your account has been disabled. Please contact an administrator."
     },
     "success": {
       "registered": "User registered successfully",
@@ -53,6 +54,18 @@
       "errorMessage": "Error message",
       "errorCode": "Error code",
       "stackTrace": "Stack trace"
+    }
+  },
+  "users": {
+    "errors": {
+      "invalidUserLevel": "Invalid user level. Must be: user, moderator, or administrator",
+      "invalidDisabledStatus": "Invalid disabled status. Must be true or false",
+      "cannotDisableSelf": "You cannot disable your own account"
+    },
+    "success": {
+      "levelUpdated": "User level updated successfully",
+      "userDisabled": "User disabled successfully",
+      "userEnabled": "User enabled successfully"
     }
   }
 }

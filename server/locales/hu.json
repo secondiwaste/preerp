@@ -17,7 +17,8 @@
       "tokenExpired": "Token lejárt.",
       "insufficientPrivileges": "Hozzáférés megtagadva. Nincs megfelelő jogosultság.",
       "missingFields": "Hiányzó kötelező mezők",
-      "incorrectPassword": "A jelenlegi jelszó helytelen"
+      "incorrectPassword": "A jelenlegi jelszó helytelen",
+      "accountDisabled": "Az Ön fiókja le lett tiltva. Kérjük, forduljon egy adminisztrátorhoz."
     },
     "success": {
       "registered": "Felhasználó sikeresen regisztrálva",
@@ -53,6 +54,18 @@
       "errorMessage": "Hibaüzenet",
       "errorCode": "Hibakód",
       "stackTrace": "Veremkivonat"
+    }
+  },
+  "users": {
+    "errors": {
+      "invalidUserLevel": "Érvénytelen felhasználói szint. Lehetséges értékek: user, moderator, administrator",
+      "invalidDisabledStatus": "Érvénytelen letiltási státusz. Igaz vagy hamis értéknek kell lennie",
+      "cannotDisableSelf": "Nem tilthatja le a saját fiókját"
+    },
+    "success": {
+      "levelUpdated": "Felhasználói szint sikeresen frissítve",
+      "userDisabled": "Felhasználó sikeresen letiltva",
+      "userEnabled": "Felhasználó sikeresen engedélyezve"
     }
   }
 }

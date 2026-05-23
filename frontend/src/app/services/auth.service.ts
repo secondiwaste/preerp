@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap, finalize } from 'rxjs';
 import { Router } from '@angular/router';
 
 export interface User {
   id: number;
   username: string;
   user_level?: string;
+  disabled?: boolean;
 }
 
 export interface AuthResponse {
@@ -64,15 +65,17 @@ export class AuthService {
     
     // Call backend logout endpoint if token exists
     if (token) {
-      this.http.post('/api/auth/logout', {}).subscribe({
+      this.http.post('/api/auth/logout', {}).pipe(
+        finalize(() => {
+          // Always clear auth data, even if logout request fails
+          this.clearAuthData();
+        })
+      ).subscribe({
         next: () => {
           console.log('[AUTH] Logout successful, session removed from server');
         },
         error: (error) => {
           console.error('[AUTH] Logout error:', error);
-        },
-        complete: () => {
-          this.clearAuthData();
         }
       });
     } else {

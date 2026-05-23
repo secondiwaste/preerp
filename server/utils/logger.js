@@ -84,6 +84,13 @@ class Logger {
 
   // Extract user info from request
   static getUserInfo(req) {
+    if (!req) {
+      return {
+        userId: null,
+        username: null,
+        ipAddress: null
+      };
+    }
     return {
       userId: req.user?.id || null,
       username: req.user?.username || null,

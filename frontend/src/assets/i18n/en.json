@@ -18,7 +18,8 @@
   "errors": {
     "genericError": "An error occurred. Please try again.",
     "loadDashboard": "Failed to load dashboard data",
-    "loadUsers": "Failed to load users"
+    "loadUsers": "Failed to load users",
+    "accountDisabled": "Your account has been disabled. Please contact an administrator."
   },
   "dashboard": {
     "welcome": "Welcome",
@@ -47,12 +48,18 @@
   "users": {
     "title": "User Management",
     "subtitle": "Manage system users and their access levels",
+    "searchPlaceholder": "Search by username...",
     "username": "Username",
     "userLevel": "User Level",
+    "status": "Status",
+    "active": "Active",
+    "disabled": "Disabled",
     "createdAt": "Created At",
     "actions": "Actions",
     "edit": "Edit",
     "changeLevel": "Change Level",
+    "enable": "Enable",
+    "disable": "Disable",
     "you": "You",
     "changeLevelTitle": "Change User Level",
     "currentLevel": "Current Level",
@@ -60,6 +67,8 @@
     "cancel": "Cancel",
     "save": "Save Changes",
     "updating": "Updating...",
+    "confirmDisable": "Are you sure you want to disable {username}?",
+    "confirmEnable": "Are you sure you want to enable {username}?",
     "levelDescUser": "Basic access to the system",
     "levelDescModerator": "Can moderate content and access reports",
     "levelDescAdmin": "Full system access and user management"

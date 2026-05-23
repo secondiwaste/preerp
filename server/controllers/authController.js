@@ -90,7 +90,7 @@ const login = async (req, res) => {
     // Validate request
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      Logger.warn('AUTH', `Login validation failed for ${req.body.username}`, { consoleOnly: true, metadata: { errors: errors.array() } });
+      Logger.warn('AUTH', `Login validation failed for ${req.body.username}`, { metadata: { errors: errors.array() } });
       return res.status(400).json({
         success: false,
         errors: errors.array()
@@ -110,6 +110,15 @@ const login = async (req, res) => {
       });
     }
     Logger.debug('AUTH', `User found: ${username} (ID: ${user.id})`, { consoleOnly: true });
+
+    // Check if user is disabled
+    if (user.disabled) {
+      await Logger.warn('AUTH', `Login failed - user is disabled: ${username}`, { userId: user.id, username: user.username, ipAddress: req.ip });
+      return res.status(403).json({
+        success: false,
+        message: i18n.tReq(req, 'auth.errors.accountDisabled')
+      });
+    }
 
     // Verify password
     const isPasswordValid = await User.comparePassword(password, user.password);

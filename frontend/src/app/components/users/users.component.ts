@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { ToastService } from '../../services/toast.service';
+import { TranslationService } from '../../services/translation.service';
 import { User, AuthService } from '../../services/auth.service';
 
 interface UsersResponse {
@@ -34,11 +35,17 @@ export class UsersComponent implements OnInit {
   newUserLevel: string = 'user';
   updating = false;
   currentUserId: number | undefined;
+  
+  // Search and sort
+  searchQuery: string = '';
+  sortField: string = 'id';
+  sortDirection: 'asc' | 'desc' = 'asc';
 
   constructor(
     private http: HttpClient,
     private toastService: ToastService,
-    private authService: AuthService
+    private authService: AuthService,
+    private translationService: TranslationService
   ) {}
 
   ngOnInit(): void {
@@ -48,7 +55,18 @@ export class UsersComponent implements OnInit {
   }
 
   loadUsers(): void {
-    this.http.get<UsersResponse>('/api/admin/users').subscribe({
+    const params: any = {};
+    
+    if (this.searchQuery) {
+      params.search = this.searchQuery;
+    }
+    
+    if (this.sortField) {
+      params.sortField = this.sortField;
+      params.sortDirection = this.sortDirection;
+    }
+    
+    this.http.get<UsersResponse>('/api/admin/users', { params }).subscribe({
       next: (response) => {
         this.loading = false;
         if (response.success) {
@@ -61,6 +79,27 @@ export class UsersComponent implements OnInit {
         this.toastService.error('Failed to load users');
       }
     });
+  }
+  
+  onSearchChange(): void {
+    this.loadUsers();
+  }
+  
+  sortBy(field: string): void {
+    if (this.sortField === field) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortField = field;
+      this.sortDirection = 'asc';
+    }
+    this.loadUsers();
+  }
+  
+  getSortIcon(field: string): string {
+    if (this.sortField !== field) {
+      return '↕';
+    }
+    return this.sortDirection === 'asc' ? '↑' : '↓';
   }
 
   formatDate(dateString: string): string {
@@ -110,6 +149,41 @@ export class UsersComponent implements OnInit {
         this.updating = false;
         console.error('Error updating user level:', error);
         const errorMessage = error.error?.message || 'Failed to update user level';
+        this.toastService.error(errorMessage);
+      }
+    });
+  }
+
+  toggleUserStatus(user: User): void {
+    if (!user || user.id === this.currentUserId) {
+      this.toastService.error('You cannot disable your own account');
+      return;
+    }
+
+    const newStatus = !user.disabled;
+    const action = newStatus ? 'disable' : 'enable';
+    const confirmKey = newStatus ? 'users.confirmDisable' : 'users.confirmEnable';
+    const confirmMessage = this.translationService.translate(confirmKey).replace('{username}', user.username);
+    
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    this.http.put<UpdateLevelResponse>(
+      `/api/admin/users/${user.id}/status`,
+      { disabled: newStatus }
+    ).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.toastService.success(response.message || `User ${action}d successfully`);
+          this.loadUsers(); // Reload the list
+        } else {
+          this.toastService.error(response.message || `Failed to ${action} user`);
+        }
+      },
+      error: (error) => {
+        console.error(`Error ${action}ing user:`, error);
+        const errorMessage = error.error?.message || `Failed to ${action} user`;
         this.toastService.error(errorMessage);
       }
     });

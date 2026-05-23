@@ -93,4 +93,12 @@ export class TranslationService {
       { code: 'de', name: 'Deutsch' }
     ];
   }
+
+  // For testing purposes - reset initialization state
+  resetForTesting(): void {
+    this.initialized = false;
+    this.translations = {};
+    this.currentLang.next('en');
+    this.serverDefaultLocale = 'en';
+  }
 }

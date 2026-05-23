@@ -6,21 +6,42 @@
       <h2>{{ 'users.title' | translate }}</h2>
       <p class="subtitle">{{ 'users.subtitle' | translate }}</p>
       
+      <div class="search-box" *ngIf="!loading">
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          (input)="onSearchChange()"
+          [placeholder]="'users.searchPlaceholder' | translate"
+          class="search-input"
+        />
+      </div>
+      
       <div *ngIf="loading" class="loading">{{ 'dashboard.loading' | translate }}</div>
       
       <div *ngIf="!loading && users.length > 0" class="users-table">
         <table>
           <thead>
             <tr>
-              <th>ID</th>
-              <th>{{ 'users.username' | translate }}</th>
-              <th>{{ 'users.userLevel' | translate }}</th>
-              <th>{{ 'users.createdAt' | translate }}</th>
+              <th class="sortable" (click)="sortBy('id')">
+                ID <span class="sort-icon">{{ getSortIcon('id') }}</span>
+              </th>
+              <th class="sortable" (click)="sortBy('username')">
+                {{ 'users.username' | translate }} <span class="sort-icon">{{ getSortIcon('username') }}</span>
+              </th>
+              <th class="sortable" (click)="sortBy('user_level')">
+                {{ 'users.userLevel' | translate }} <span class="sort-icon">{{ getSortIcon('user_level') }}</span>
+              </th>
+              <th class="sortable" (click)="sortBy('disabled')">
+                {{ 'users.status' | translate }} <span class="sort-icon">{{ getSortIcon('disabled') }}</span>
+              </th>
+              <th class="sortable" (click)="sortBy('created_at')">
+                {{ 'users.createdAt' | translate }} <span class="sort-icon">{{ getSortIcon('created_at') }}</span>
+              </th>
               <th>{{ 'users.actions' | translate }}</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let user of users">
+            <tr *ngFor="let user of users" [class.disabled-row]="user.disabled">
               <td>{{ user.id }}</td>
               <td>
                 <strong>{{ user.username }}</strong>
@@ -33,6 +54,11 @@
                   {{ user.user_level || 'user' }}
                 </span>
               </td>
+              <td>
+                <span class="status-badge" [class.disabled]="user.disabled">
+                  {{ user.disabled ? ('users.disabled' | translate) : ('users.active' | translate) }}
+                </span>
+              </td>
               <td>{{ formatDate(user.created_at) }}</td>
               <td>
                 <button 
@@ -41,6 +67,15 @@
                   [disabled]="user.id === currentUserId"
                 >
                   {{ 'users.changeLevel' | translate }}
+                </button>
+                <button 
+                  class="btn-small"
+                  [class.btn-danger]="!user.disabled"
+                  [class.btn-success]="user.disabled"
+                  (click)="toggleUserStatus(user)"
+                  [disabled]="user.id === currentUserId"
+                >
+                  {{ user.disabled ? ('users.enable' | translate) : ('users.disable' | translate) }}
                 </button>
               </td>
             </tr>

@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const Session = require('../models/Session');
+const User = require('../models/User');
 const i18n = require('../config/i18n');
 require('dotenv').config();
 
@@ -26,6 +27,25 @@ const authMiddleware = async (req, res, next) => {
       return res.status(401).json({
         success: false,
         message: i18n.tReq(req, 'auth.errors.invalidSession')
+      });
+    }
+    
+    // Check if user is disabled
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      await Session.deleteByToken(token);
+      return res.status(401).json({
+        success: false,
+        message: i18n.tReq(req, 'auth.errors.invalidSession')
+      });
+    }
+    
+    if (user.disabled) {
+      // Delete all sessions for the disabled user
+      await Session.deleteByUserId(user.id);
+      return res.status(403).json({
+        success: false,
+        message: i18n.tReq(req, 'auth.errors.accountDisabled')
       });
     }
     

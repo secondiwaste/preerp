@@ -19,7 +19,7 @@ class User {
   static async findById(id) {
     try {
       const [rows] = await pool.query(
-        'SELECT id, username, user_level, created_at FROM users WHERE id = ?',
+        'SELECT id, username, user_level, disabled, created_at FROM users WHERE id = ?',
         [id]
       );
       return rows[0];
@@ -32,7 +32,7 @@ class User {
   static async findByIdWithPassword(id) {
     try {
       const [rows] = await pool.query(
-        'SELECT id, username, password, user_level, created_at FROM users WHERE id = ?',
+        'SELECT id, username, password, user_level, disabled, created_at FROM users WHERE id = ?',
         [id]
       );
       return rows[0];
@@ -69,11 +69,28 @@ class User {
   }
 
   // Get all users (without passwords)
-  static async findAll() {
+  static async findAll(options = {}) {
     try {
-      const [rows] = await pool.query(
-        'SELECT id, username, user_level, created_at FROM users'
-      );
+      const { search = '', sortField = 'id', sortDirection = 'asc' } = options;
+      
+      // Validate sortField to prevent SQL injection
+      const allowedSortFields = ['id', 'username', 'user_level', 'disabled', 'created_at'];
+      const field = allowedSortFields.includes(sortField) ? sortField : 'id';
+      
+      // Validate sortDirection
+      const direction = sortDirection.toLowerCase() === 'desc' ? 'DESC' : 'ASC';
+      
+      let query = 'SELECT id, username, user_level, disabled, created_at FROM users';
+      const params = [];
+      
+      if (search) {
+        query += ' WHERE username LIKE ?';
+        params.push(`%${search}%`);
+      }
+      
+      query += ` ORDER BY ${field} ${direction}`;
+      
+      const [rows] = await pool.query(query, params);
       return rows;
     } catch (error) {
       throw error;
@@ -109,6 +126,34 @@ class User {
       const [result] = await pool.query(
         'UPDATE users SET password = ? WHERE id = ?',
         [hashedPassword, userId]
+      );
+
+      return result.affectedRows > 0;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Delete user by ID
+  static async deleteById(userId) {
+    try {
+      const [result] = await pool.query(
+        'DELETE FROM users WHERE id = ?',
+        [userId]
+      );
+
+      return result.affectedRows > 0;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Set user disabled status
+  static async setDisabledStatus(userId, disabled) {
+    try {
+      const [result] = await pool.query(
+        'UPDATE users SET disabled = ? WHERE id = ?',
+        [disabled, userId]
       );
 
       return result.affectedRows > 0;
