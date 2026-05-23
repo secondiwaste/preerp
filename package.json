@@ -9,7 +9,6 @@
     "build:frontend": "cd frontend && npm run build",
     "watch:frontend": "cd frontend && npm run watch",
     "install:all": "npm install && cd frontend && npm install",
-    "postinstall": "cd frontend && npm install",
     "migration:status": "node scripts/migration-status.js",
     "create-archive": "node scripts/create-release-archive.js",
     "test": "jest --coverage",

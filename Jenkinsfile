@@ -133,7 +133,7 @@ pipeline {
                         if exist release rmdir /s /q release
                         mkdir release\\${RELEASE_NAME}
                         mkdir release\\${RELEASE_NAME}\\server
-                        mkdir release\\${RELEASE_NAME}\\public
+                        mkdir release\\${RELEASE_NAME}\\frontend\\dist\\preerp\\browser
                         mkdir release\\${RELEASE_NAME}\\database
                         mkdir release\\${RELEASE_NAME}\\migrations
                     """
@@ -145,6 +145,7 @@ pipeline {
                         copy package.json release\\${RELEASE_NAME}\\
                         copy package-lock.json release\\${RELEASE_NAME}\\
                         copy .env.example release\\${RELEASE_NAME}\\.env.example
+                        copy .env release\\${RELEASE_NAME}\\.env
                     """
                     
                     // Copy database and migration files
@@ -155,7 +156,7 @@ pipeline {
                     
                     // Copy built frontend
                     bat """
-                        xcopy /E /I /Y frontend\\dist\\preerp\\browser release\\${RELEASE_NAME}\\public
+                        xcopy /E /I /Y frontend\\dist\\preerp\\browser release\\${RELEASE_NAME}\\frontend\\dist\\preerp\\browser
                     """
                     
                     // Copy documentation
