@@ -18,7 +18,7 @@ const getLogs = async (req, res) => {
     const userInfo = Logger.getUserInfo(req);
     Logger.info('LOGS', `Admin ${userInfo.username} accessed logs viewer`, { 
       ...userInfo,
-      metadata: { page, limit, level, category, search }
+      metadata: { page, limit, level, category, search, startDate, endDate }
     });
 
     const result = await Log.findAll({

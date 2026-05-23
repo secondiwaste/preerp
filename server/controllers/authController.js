@@ -53,14 +53,14 @@ const register = async (req, res) => {
 
     // Create new user
     const user = await User.create(username, password);
-    Logger.info('AUTH', `User created successfully: ${username} (ID: ${user.id})`, { consoleOnly: true });
+    await Logger.info('AUTH', `User created successfully: ${username} (ID: ${user.id})`, { userId: user.id, username: user.username, ipAddress: req.ip });
 
     // Generate token
     const token = generateToken(user.id, user.username, user.user_level);
 
     // Save token to database
     await Session.create(user.id, token, process.env.JWT_EXPIRES_IN);
-    Logger.success('AUTH', `Registration completed successfully for: ${username}`, { consoleOnly: true });
+    await Logger.success('AUTH', `Registration completed successfully for: ${username}`, { userId: user.id, username: user.username, ipAddress: req.ip });
     res.status(201).json({
       success: true,
       message: i18n.tReq(req, 'auth.success.registered'),
@@ -103,7 +103,7 @@ const login = async (req, res) => {
     // Find user
     const user = await User.findByUsername(username);
     if (!user) {
-      Logger.warn('AUTH', `Login failed - user not found: ${username}`, { consoleOnly: true });
+      await Logger.warn('AUTH', `Login failed - user not found: ${username}`, { ipAddress: req.ip, metadata: { username } });
       return res.status(401).json({
         success: false,
         message: i18n.tReq(req, 'auth.errors.invalidCredentials')
@@ -114,7 +114,7 @@ const login = async (req, res) => {
     // Verify password
     const isPasswordValid = await User.comparePassword(password, user.password);
     if (!isPasswordValid) {
-      Logger.warn('AUTH', `Login failed - invalid password for user: ${username}`, { consoleOnly: true });
+      await Logger.warn('AUTH', `Login failed - invalid password for user: ${username}`, { userId: user.id, username: user.username, ipAddress: req.ip });
       return res.status(401).json({
         success: false,
         message: i18n.tReq(req, 'auth.errors.invalidCredentials')
@@ -127,7 +127,7 @@ const login = async (req, res) => {
 
     // Save token to database
     await Session.create(user.id, token, process.env.JWT_EXPIRES_IN);
-    Logger.success('AUTH', `Login successful for user: ${username}`, { consoleOnly: true });
+    await Logger.success('AUTH', `Login successful for user: ${username}`, { userId: user.id, username: user.username, ipAddress: req.ip });
     res.json({
       success: true,
       message: i18n.tReq(req, 'auth.success.loginSuccess'),
@@ -198,7 +198,7 @@ const logout = async (req, res) => {
     const deleted = await Session.deleteByToken(token);
     
     if (deleted) {
-      Logger.success('AUTH', 'Session deleted successfully', { consoleOnly: true });
+      await Logger.success('AUTH', `Logout successful for user: ${req.user.username}`, { userId: req.user.id, username: req.user.username, ipAddress: req.ip });
       res.json({
         success: true,
         message: i18n.tReq(req, 'auth.success.logoutSuccess')
@@ -254,7 +254,7 @@ const changePassword = async (req, res) => {
 
     const isPasswordValid = await User.comparePassword(currentPassword, user.password);
     if (!isPasswordValid) {
-      Logger.warn('AUTH', `Change password failed - current password incorrect for user: ${user.username}`, { consoleOnly: true });
+      await Logger.warn('AUTH', `Change password failed - current password incorrect for user: ${user.username}`, { userId: user.id, username: user.username, ipAddress: req.ip });
       return res.status(401).json({
         success: false,
         message: i18n.tReq(req, 'auth.errors.incorrectPassword')
@@ -262,7 +262,7 @@ const changePassword = async (req, res) => {
     }
 
     await User.updatePassword(user.id, newPassword);
-    Logger.success('AUTH', `Password updated successfully for user: ${user.username}`, { consoleOnly: true });
+    await Logger.success('AUTH', `Password updated successfully for user: ${user.username}`, { userId: user.id, username: user.username, ipAddress: req.ip });
 
     res.json({
       success: true,

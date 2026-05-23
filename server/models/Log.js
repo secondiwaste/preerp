@@ -48,12 +48,12 @@ class Log {
       }
 
       if (startDate) {
-        conditions.push('timestamp >= ?');
+        conditions.push('DATE(timestamp) >= ?');
         params.push(startDate);
       }
 
       if (endDate) {
-        conditions.push('timestamp <= ?');
+        conditions.push('DATE(timestamp) <= ?');
         params.push(endDate);
       }
 

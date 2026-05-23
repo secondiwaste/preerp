@@ -38,7 +38,7 @@
           <div class="filter-group">
             <label>{{ 'logs.startDate' | translate }}</label>
             <input 
-              type="datetime-local" 
+              type="date" 
               [(ngModel)]="startDate" 
               class="filter-input"
             />
@@ -47,7 +47,7 @@
           <div class="filter-group">
             <label>{{ 'logs.endDate' | translate }}</label>
             <input 
-              type="datetime-local" 
+              type="date" 
               [(ngModel)]="endDate" 
               class="filter-input"
             />
@@ -97,14 +97,14 @@
                 <td class="category">{{ log.category }}</td>
                 <td class="message">
                   {{ log.message }}
-                  <button 
+                  <a 
                     *ngIf="log.metadata" 
-                    class="metadata-btn"
+                    class="metadata-link"
                     (click)="expandMetadata(log)"
                     title="View metadata"
                   >
                     [...]
-                  </button>
+                  </a>
                 </td>
                 <td>{{ log.username || '-' }}</td>
                 <td class="ip">{{ log.ip_address || '-' }}</td>

@@ -207,19 +207,18 @@ tr.level-warn {
   word-break: break-word;
 }
 
-.metadata-btn {
-  margin-left: 0.5rem;
-  padding: 2px 6px;
-  background: #667eea;
-  color: white;
-  border: none;
-  border-radius: 3px;
-  font-size: 0.75rem;
+.metadata-link {
+  margin-left: 0.25rem;
+  color: #667eea;
+  font-size: 0.7rem;
   cursor: pointer;
+  text-decoration: none;
+  opacity: 0.7;
 }
 
-.metadata-btn:hover {
-  background: #5568d3;
+.metadata-link:hover {
+  opacity: 1;
+  text-decoration: underline;
 }
 
 .ip {
@@ -300,6 +299,20 @@ tr.level-warn {
 
   th, td {
     padding: 0.5rem;
+  }
+
+  /* Allow timestamp to wrap on mobile */
+  .timestamp {
+    white-space: normal;
+    max-width: 100px;
+    min-width: 80px;
+    line-height: 1.3;
+  }
+
+  /* Give message more space on mobile */
+  .message {
+    max-width: none;
+    min-width: 150px;
   }
 
   .pagination {
