@@ -1,0 +1,418 @@
+<div class="container">
+  <app-navbar></app-navbar>
+  <div class="content">
+    <div class="card">
+      <div *ngIf="loading" class="loading">{{ 'common.loading' | translate }}</div>
+
+      <div *ngIf="!loading && project">
+        <div class="header">
+          <div>
+            <h2>{{ project.munkaszam }} - {{ 'projectDetails.projectInformation' | translate }}</h2>
+          </div>
+          <div class="btn-group">
+            <button class="btn btn-secondary" (click)="goBack()">
+              ← {{ 'common.back' | translate }}
+            </button>
+            <button 
+              *ngIf="canEdit && !isEditingProject" 
+              class="btn btn-primary" 
+              (click)="toggleEditProject()"
+              [title]="'common.edit' | translate"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button *ngIf="isEditingProject" class="btn btn-primary" (click)="saveProject()" [disabled]="saving">
+              {{ saving ? ('common.saving' | translate) : ('common.save' | translate) }}
+            </button>
+            <button *ngIf="isEditingProject" class="btn btn-secondary" (click)="toggleEditProject()" [disabled]="saving">
+              {{ 'common.cancel' | translate }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Project Information Section -->
+        <div class="project-section">
+          <div class="details-grid">
+            <div class="detail-item">
+              <label>{{ 'projects.munkaszam' | translate }}</label>
+              <input 
+                *ngIf="isEditingProject" 
+                type="text" 
+                [(ngModel)]="projectFormData.munkaszam" 
+                class="form-input"
+              />
+              <div *ngIf="!isEditingProject" class="detail-value">{{ project.munkaszam }}</div>
+            </div>
+
+            <div class="detail-item">
+              <label>{{ 'projects.munkaMegnevezes' | translate }}</label>
+              <input 
+                *ngIf="isEditingProject" 
+                type="text" 
+                [(ngModel)]="projectFormData.munka_megnevezes" 
+                class="form-input"
+              />
+              <div *ngIf="!isEditingProject" class="detail-value">{{ project.munka_megnevezes }}</div>
+            </div>
+
+            <div class="detail-item full-width">
+              <label>{{ 'projects.reszletek' | translate }}</label>
+              <textarea 
+                *ngIf="isEditingProject" 
+                [(ngModel)]="projectFormData.reszletek" 
+                class="form-input"
+                rows="4"
+              ></textarea>
+              <div *ngIf="!isEditingProject" class="detail-value">{{ project.reszletek || '-' }}</div>
+            </div>
+
+            <div class="detail-item">
+              <label>{{ 'projects.megrendeloNeve' | translate }}</label>
+              <input 
+                *ngIf="isEditingProject" 
+                type="text" 
+                [(ngModel)]="projectFormData.megrendelo_neve" 
+                class="form-input"
+              />
+              <div *ngIf="!isEditingProject" class="detail-value">{{ project.megrendelo_neve || '-' }}</div>
+            </div>
+
+            <div class="detail-item">
+              <label>{{ 'projects.megrendeloAdatai' | translate }}</label>
+              <textarea 
+                *ngIf="isEditingProject" 
+                [(ngModel)]="projectFormData.megrendelo_adatai" 
+                class="form-input"
+                rows="2"
+              ></textarea>
+              <div *ngIf="!isEditingProject" class="detail-value">{{ project.megrendelo_adatai || '-' }}</div>
+            </div>
+
+            <div class="detail-item full-width">
+              <label>{{ 'projects.szallitasiCim' | translate }}</label>
+              <textarea 
+                *ngIf="isEditingProject" 
+                [(ngModel)]="projectFormData.szallitasi_cim" 
+                class="form-input"
+                rows="2"
+              ></textarea>
+              <div *ngIf="!isEditingProject" class="detail-value">{{ project.szallitasi_cim || '-' }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Elemcsoport Section -->
+        <div class="elemcsoport-section">
+          <div class="details-header">
+            <h2>{{ 'projectDetails.elemcsoportok' | translate }}</h2>
+            <button 
+              *ngIf="canEdit" 
+              class="btn btn-primary" 
+              (click)="openElemcsoportModal()"
+            >
+              + {{ 'projectDetails.addElemcsoport' | translate }}
+            </button>
+          </div>
+
+          <div *ngIf="elemcsoportok.length === 0" class="no-data">
+            {{ 'projectDetails.noElemcsoportok' | translate }}
+          </div>
+
+          <!-- Elemcsoport Tabs -->
+          <div *ngIf="elemcsoportok.length > 0">
+            <div class="tabs">
+              <button 
+                *ngFor="let elem of elemcsoportok; let i = index"
+                class="tab" 
+                [class.active]="activeElemcsoportIndex === i"
+                (click)="selectElemcsoport(i)"
+              >
+                {{ elem.nev }}
+              </button>
+            </div>
+
+            <!-- Active Elemcsoport Content -->
+            <div class="tab-content" *ngIf="selectedElemcsoport">
+              <div class="elemcsoport-detail-view">
+                <div class="elemcsoport-header">
+                  <h3>{{ selectedElemcsoport.nev }}</h3>
+                  <div *ngIf="canEdit" class="btn-group">
+                    <button class="btn btn-sm btn-secondary" (click)="openElemcsoportModal(selectedElemcsoport)" [title]="'common.edit' | translate">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button class="btn btn-sm btn-danger" (click)="deleteElemcsoport(selectedElemcsoport)" [title]="'common.delete' | translate">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </div>
+                
+                <!-- Items Section -->
+                <div class="items-section">
+                  <div class="items-header">
+                    <h4>{{ 'projectDetails.items' | translate }}</h4>
+                    <button *ngIf="canEdit" class="btn btn-sm btn-primary" (click)="addItem()">
+                      + {{ 'projectDetails.addItem' | translate }}
+                    </button>
+                  </div>
+
+                  <div *ngIf="items.length === 0" class="no-data">
+                    {{ 'projectDetails.noItems' | translate }}
+                  </div>
+
+                  <table *ngIf="items.length > 0" class="items-table">
+                    <thead>
+                      <tr class="header-row">
+                        <th *ngIf="canEdit">{{ 'users.actions' | translate }}</th>
+                        <th>{{ 'projectDetails.sorszam' | translate }}</th>
+                        <th class="sortable" (click)="sortBy('elemjel')">
+                          {{ 'projectDetails.elemjel' | translate }} <span class="sort-icon">{{ getSortIcon('elemjel') }}</span>
+                        </th>
+                        <th class="sortable" (click)="sortBy('megjegyzes')">
+                          {{ 'projectDetails.megjegyzes' | translate }} <span class="sort-icon">{{ getSortIcon('megjegyzes') }}</span>
+                        </th>
+                        <th>{{ 'projectDetails.keszul' | translate }}</th>
+                        <th class="sortable" (click)="sortBy('szelesseg')">
+                          {{ 'projectDetails.szelesseg' | translate }} <span class="sort-icon">{{ getSortIcon('szelesseg') }}</span>
+                        </th>
+                        <th class="sortable" (click)="sortBy('hosszusag')">
+                          {{ 'projectDetails.hosszusag' | translate }} <span class="sort-icon">{{ getSortIcon('hosszusag') }}</span>
+                        </th>
+                        <th class="sortable" (click)="sortBy('magassag')">
+                          {{ 'projectDetails.magassag' | translate }} <span class="sort-icon">{{ getSortIcon('magassag') }}</span>
+                        </th>
+                      </tr>
+                      <tr class="filter-row">
+                        <th *ngIf="canEdit"></th>
+                        <th></th>
+                        <th>
+                          <input 
+                            type="text" 
+                            class="filter-input col-elemjel" 
+                            [(ngModel)]="filters.elemjel" 
+                            (input)="onFilterChange()"
+                            placeholder="Filter..."
+                          />
+                        </th>
+                        <th>
+                          <input 
+                            type="text" 
+                            class="filter-input col-megjegyzes" 
+                            [(ngModel)]="filters.megjegyzes" 
+                            (input)="onFilterChange()"
+                            placeholder="Filter..."
+                          />
+                        </th>
+                        <th></th>
+                        <th>
+                          <input 
+                            type="text" 
+                            class="filter-input col-szelesseg" 
+                            [(ngModel)]="filters.szelesseg" 
+                            (input)="onFilterChange()"
+                            placeholder="Filter..."
+                          />
+                        </th>
+                        <th>
+                          <input 
+                            type="text" 
+                            class="filter-input col-hosszusag" 
+                            [(ngModel)]="filters.hosszusag" 
+                            (input)="onFilterChange()"
+                            placeholder="Filter..."
+                          />
+                        </th>
+                        <th>
+                          <input 
+                            type="text" 
+                            class="filter-input col-magassag" 
+                            [(ngModel)]="filters.magassag" 
+                            (input)="onFilterChange()"
+                            placeholder="Filter..."
+                          />
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of filteredItems; let i = index">
+                        <!-- Actions column -->
+                        <td *ngIf="canEdit" class="actions-cell">
+                          <button class="btn btn-xs btn-danger" (click)="deleteItem(item)" [title]="'common.delete' | translate">
+                            <mat-icon>delete</mat-icon>
+                          </button>
+                        </td>
+                        
+                        <!-- Sorszam column -->
+                        <td class="sorszam-cell">
+                          {{ i + 1 }}
+                        </td>
+                        
+                        <!-- Elemjel column -->
+                        <td>
+                          <div 
+                            *ngIf="canEdit && !isEditingCell(item.id, 'elemjel')"
+                            class="table-cell col-elemjel"
+                            (click)="startEditCell(item.id, 'elemjel')"
+                          >
+                            {{ item.elemjel }}
+                          </div>
+                          <input 
+                            *ngIf="canEdit && isEditingCell(item.id, 'elemjel')"
+                            type="text" 
+                            [(ngModel)]="item.elemjel" 
+                            (blur)="stopEditCell(item, 'elemjel')"
+                            (keydown)="onCellKeydown($event, item, 'elemjel')"
+                            [attr.data-item-id]="item.id"
+                            [attr.data-col]="'elemjel'"
+                            class="table-input col-elemjel"
+                          />
+                          <span *ngIf="!canEdit">{{ item.elemjel }}</span>
+                        </td>
+                        
+                        <!-- Megjegyzes column -->
+                        <td>
+                          <div 
+                            *ngIf="canEdit && !isEditingCell(item.id, 'megjegyzes')"
+                            class="table-cell col-megjegyzes"
+                            (click)="startEditCell(item.id, 'megjegyzes')"
+                          >
+                            {{ item.megjegyzes }}
+                          </div>
+                          <input 
+                            *ngIf="canEdit && isEditingCell(item.id, 'megjegyzes')"
+                            type="text" 
+                            [(ngModel)]="item.megjegyzes" 
+                            (blur)="stopEditCell(item, 'megjegyzes')"
+                            (keydown)="onCellKeydown($event, item, 'megjegyzes')"
+                            [attr.data-item-id]="item.id"
+                            [attr.data-col]="'megjegyzes'"
+                            class="table-input col-megjegyzes"
+                          />
+                          <span *ngIf="!canEdit">{{ item.megjegyzes }}</span>
+                        </td>
+                        
+                        <!-- Keszul column -->
+                        <td>
+                          <div 
+                            *ngIf="canEdit && !isEditingCell(item.id, 'keszul')"
+                            class="table-cell col-keszul"
+                            (click)="startEditCell(item.id, 'keszul')"
+                          >
+                            {{ item.keszul }}
+                          </div>
+                          <input 
+                            *ngIf="canEdit && isEditingCell(item.id, 'keszul')"
+                            [(ngModel)]="item.keszul" 
+                            (blur)="stopEditCell(item, 'keszul')"
+                            (keydown)="onCellKeydown($event, item, 'keszul')"
+                            [attr.data-item-id]="item.id"
+                            [attr.data-col]="'keszul'"
+                            class="table-input col-keszul"
+                          />
+                          <span *ngIf="!canEdit">{{ item.keszul }}</span>
+                        </td>
+                        
+                        <!-- Szelesseg column -->
+                        <td>
+                          <div 
+                            *ngIf="canEdit && !isEditingCell(item.id, 'szelesseg')"
+                            class="table-cell col-szelesseg"
+                            (click)="startEditCell(item.id, 'szelesseg')"
+                          >
+                            {{ item.szelesseg }}
+                          </div>
+                          <input 
+                            *ngIf="canEdit && isEditingCell(item.id, 'szelesseg')"
+                            [(ngModel)]="item.szelesseg" 
+                            (blur)="stopEditCell(item, 'szelesseg')"
+                            (keydown)="onCellKeydown($event, item, 'szelesseg')"
+                            [attr.data-item-id]="item.id"
+                            [attr.data-col]="'szelesseg'"
+                            class="table-input col-szelesseg"
+                          />
+                          <span *ngIf="!canEdit">{{ item.szelesseg }}</span>
+                        </td>
+                        
+                        <!-- Hosszusag column -->
+                        <td>
+                          <div 
+                            *ngIf="canEdit && !isEditingCell(item.id, 'hosszusag')"
+                            class="table-cell col-hosszusag"
+                            (click)="startEditCell(item.id, 'hosszusag')"
+                          >
+                            {{ item.hosszusag }}
+                          </div>
+                          <input 
+                            *ngIf="canEdit && isEditingCell(item.id, 'hosszusag')"
+                            [(ngModel)]="item.hosszusag" 
+                            (blur)="stopEditCell(item, 'hosszusag')"
+                            (keydown)="onCellKeydown($event, item, 'hosszusag')"
+                            [attr.data-item-id]="item.id"
+                            [attr.data-col]="'hosszusag'"
+                            class="table-input col-hosszusag"
+                          />
+                          <span *ngIf="!canEdit">{{ item.hosszusag }}</span>
+                        </td>
+                        
+                        <!-- Magassag column -->
+                        <td>
+                          <div 
+                            *ngIf="canEdit && !isEditingCell(item.id, 'magassag')"
+                            class="table-cell col-magassag"
+                            (click)="startEditCell(item.id, 'magassag')"
+                          >
+                            {{ item.magassag }}
+                          </div>
+                          <input 
+                            *ngIf="canEdit && isEditingCell(item.id, 'magassag')"
+                            [(ngModel)]="item.magassag" 
+                            (blur)="stopEditCell(item, 'magassag')"
+                            (keydown)="onCellKeydown($event, item, 'magassag')"
+                            [attr.data-item-id]="item.id"
+                            [attr.data-col]="'magassag'"
+                            class="table-input col-magassag"
+                          />
+                          <span *ngIf="!canEdit">{{ item.magassag }}</span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Elemcsoport Modal -->
+<div *ngIf="showElemcsoportModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>{{ isEditingElemcsoport ? ('projectDetails.editElemcsoport' | translate) : ('projectDetails.addElemcsoport' | translate) }}</h2>
+      <button class="close-btn" (click)="closeElemcsoportModal()">&times;</button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="form-group">
+        <label>{{ 'projectDetails.nev' | translate }} *</label>
+        <input 
+          type="text" 
+          [(ngModel)]="elemcsoportFormData.nev" 
+          class="form-input"
+          placeholder="{{ 'projectDetails.nevPlaceholder' | translate }}"
+        />
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeElemcsoportModal()" [disabled]="saving">
+        {{ 'common.cancel' | translate }}
+      </button>
+      <button class="btn btn-primary" (click)="saveElemcsoport()" [disabled]="saving || !elemcsoportFormData.nev">
+        {{ saving ? ('common.saving' | translate) : ('common.save' | translate) }}
+      </button>
+    </div>
+  </div>
+</div>

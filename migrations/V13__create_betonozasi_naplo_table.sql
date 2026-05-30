@@ -1,0 +1,33 @@
+-- Create betonozasi_naplo table
+-- Stores concrete pouring log entries
+CREATE TABLE betonozasi_naplo (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  datum DATE NOT NULL,
+  rendszam VARCHAR(50),
+  szallitolevel_szama VARCHAR(100),
+  betonuzem VARCHAR(255),
+  betonminoseg VARCHAR(100),
+  kiteti_osztalyok VARCHAR(100),
+  maximalis_szemnagysag VARCHAR(50),
+  cementfajta VARCHAR(100),
+  receptszam VARCHAR(50),
+  levego_beton_homerseklete DECIMAL(5,2),
+  keveres_kezdete TIME,
+  keveres_vege TIME,
+  erkezes_ideje TIME,
+  terules DECIMAL(5,2),
+  urites_kezdete TIME,
+  urites_vege TIME,
+  idon_tuli_varakozas INT,
+  elmeleti_mennyiseg DECIMAL(10,3),
+  kert_mennyiseg DECIMAL(10,3),
+  adalekszerek TEXT,
+  formalevalaszto VARCHAR(255),
+  megjegyzes TEXT,
+  created_by INT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE RESTRICT,
+  INDEX idx_datum (datum),
+  INDEX idx_created_by (created_by)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

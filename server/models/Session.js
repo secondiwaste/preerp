@@ -18,6 +18,20 @@ class Session {
         expiresAt
       };
     } catch (error) {
+      // If duplicate token (should be virtually impossible with UUID jti), 
+      // just return existing session instead of throwing error
+      if (error.code === 'ER_DUP_ENTRY') {
+        console.warn('[WARN] [SESSION] Duplicate token detected (rare), returning existing session');
+        const existing = await this.findByToken(token);
+        if (existing) {
+          return {
+            id: existing.id,
+            userId: existing.user_id,
+            token: existing.token,
+            expiresAt: existing.expires_at
+          };
+        }
+      }
       console.error('[ERROR] [SESSION] Error creating session:', error);
       throw error;
     }

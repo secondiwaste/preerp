@@ -2,7 +2,6 @@
   <div 
     *ngFor="let toast of toasts" 
     class="toast toast-{{toast.type}}"
-    [@fadeInOut]
   >
     <div class="toast-icon">
       <span *ngIf="toast.type === 'success'">✓</span>

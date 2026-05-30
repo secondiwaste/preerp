@@ -124,6 +124,13 @@ pipeline {
             }
         }
         
+        stage('Build Documentation') {
+            steps {
+                echo 'Converting markdown documentation to HTML...'
+                bat 'npm run build:docs'
+            }
+        }
+        
         stage('Prepare Release Package') {
             steps {
                 echo 'Creating release package...'
@@ -166,6 +173,7 @@ pipeline {
                         copy MIGRATIONS.md release\\${RELEASE_NAME}\\
                         copy I18N.md release\\${RELEASE_NAME}\\
                         copy USER_LEVELS.md release\\${RELEASE_NAME}\\
+                        copy FELHASZNALOI_KEZIKONYV.md release\\${RELEASE_NAME}\\
                     """
                     
                     // Create deployment instructions

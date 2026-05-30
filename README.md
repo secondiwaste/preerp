@@ -415,9 +415,52 @@ npm install
 | `npm start` | Start production server (runs migrations automatically) |
 | `npm run dev` | Start development server with auto-reload |
 | `npm run build:frontend` | Build Angular frontend for production |
+| `npm run build:docs` | Convert markdown documentation to HTML |
 | `npm run watch:frontend` | Watch frontend files and rebuild automatically on change |
 | `npm run install:all` | Install all dependencies (root + frontend) |
 | `npm run migration:status` | Check database migration status |
+
+## 📚 Documentation Build System
+
+The application includes an automated documentation build system that converts markdown documentation to HTML.
+
+### User Manual
+
+- **Source**: `FELHASZNALOI_KEZIKONYV.md` (markdown format)
+- **Build Command**: `npm run build:docs`
+- **Output**: `frontend/dist/preerp/browser/docs/index.html`
+- **Access**: Available at `http://localhost:3000/docs/` or via navbar menu
+
+### How It Works
+
+1. The `scripts/build-docs.js` script reads the markdown documentation
+2. Converts it to HTML using the `marked` library
+3. Applies CSS styling for professional appearance
+4. Outputs to the frontend dist directory
+5. Served as static content by the Express server
+
+### Jenkins Integration
+
+The documentation is automatically built during the Jenkins pipeline:
+- **Stage**: "Build Documentation" (after frontend build)
+- **Trigger**: Runs on every build
+- **Release**: Included in the release package
+
+### Adding to Navbar
+
+The documentation link is available in the navbar menu:
+- **Menu Item**: "Felhasználói kézikönyv" 📖
+- **Target**: Opens in new browser tab
+- **Access**: Available to all authenticated users
+
+### Editing Documentation
+
+1. Edit `FELHASZNALOI_KEZIKONYV.md` in markdown format
+2. Run `npm run build:docs` to generate HTML
+3. View at `http://localhost:3000/docs/`
+4. Commit both markdown and updated builds
+
+**📚 Full Documentation Build Guide**: See [DOCUMENTATION_BUILD.md](DOCUMENTATION_BUILD.md) for detailed information.
 
 ## 🔄 Development Workflow
 

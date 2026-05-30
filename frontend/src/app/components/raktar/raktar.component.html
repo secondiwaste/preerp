@@ -1,0 +1,120 @@
+<div class="container">
+  <app-navbar></app-navbar>
+  
+  <div class="content">
+    <div class="card">
+      <div class="header">
+        <div>
+          <h2>{{ 'raktar.title' | translate }}</h2>
+          <p class="subtitle">{{ 'raktar.subtitle' | translate }}</p>
+        </div>
+        <button 
+          *ngIf="canEdit" 
+          class="btn-primary" 
+          (click)="createNewEntry()"
+        >
+          {{ 'raktar.addNew' | translate }}
+        </button>
+      </div>
+      
+      <div class="filters-row">
+        <div class="year-month-filter">
+          <label>{{ 'raktar.selectMonth' | translate }}</label>
+          <input 
+            id="month-picker-input"
+            type="text" 
+            [value]="selectedYearMonth"
+            readonly
+            class="month-input"
+          />
+        </div>
+        
+        <div class="search-box">
+          <input 
+            type="text" 
+            [(ngModel)]="searchQuery" 
+            (input)="onSearchChange()"
+            [placeholder]="'raktar.searchPlaceholder' | translate"
+            class="search-input"
+          />
+        </div>
+      </div>
+      
+      <div *ngIf="loading" class="loading">{{ 'common.loading' | translate }}</div>
+      
+      <div *ngIf="!loading && entries.length > 0" class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th *ngIf="canEdit" class="actions-column">{{ 'common.actions' | translate }}</th>
+              <th class="sortable sticky-datum" (click)="sortBy('datum')">
+                {{ 'raktar.datum' | translate }}
+              </th>
+              <th class="sortable" (click)="sortBy('megnevezes')">
+                {{ 'raktar.megnevezes' | translate }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let entry of entries">
+              <!-- Actions -->
+              <td *ngIf="canEdit" class="actions-column">
+                <button 
+                  class="btn-small btn-info" 
+                  (click)="viewDetails(entry.id)"
+                  [title]="'common.details' | translate"
+                >
+                  <mat-icon>visibility</mat-icon>
+                </button>
+                <button 
+                  class="btn-small btn-danger" 
+                  (click)="deleteEntry(entry)"
+                  [title]="'common.delete' | translate"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+              
+              <!-- Datum -->
+              <td class="sticky-datum">
+                <div 
+                  class="table-cell" 
+                  *ngIf="canEdit && !isEditingCell(entry.id, 'datum')"
+                  (click)="startEditCell(entry.id, 'datum')"
+                >
+                  {{ formatDate(entry.datum) }}
+                </div>
+                <input 
+                  *ngIf="canEdit && isEditingCell(entry.id, 'datum')"
+                  type="date" 
+                  [value]="getDateForInput(entry.datum)"
+                  (input)="entry.datum = $any($event.target).value"
+                  (blur)="stopEditCell(entry, 'datum')"
+                  (keydown)="onCellKeydown($event, entry, 'datum')"
+                  [attr.data-entry-id]="entry.id"
+                  [attr.data-col]="'datum'"
+                  class="table-input"
+                />
+                <span *ngIf="!canEdit">{{ formatDate(entry.datum) }}</span>
+              </td>
+              
+              <!-- Megnevezés -->
+              <td>
+                <span 
+                  class="clickable-text" 
+                  (click)="viewDetails(entry.id)"
+                >
+                  {{ getMegnevezesOrDefault(entry.megnevezes) }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div *ngIf="!loading && entries.length === 0" class="no-data">
+        {{ 'raktar.noEntries' | translate }}
+      </div>
+    </div>
+  </div>
+</div>

@@ -82,10 +82,19 @@ router.put('/admin/users/:userId/level', authMiddleware, requireAdmin, async (re
       });
     }
 
+    // Get user information for logging
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: i18n.tReq(req, 'auth.errors.userNotFound')
+      });
+    }
+
     const updated = await User.updateUserLevel(userId, user_level);
     
     if (updated) {
-      Logger.info('ADMIN', `User ${userId} level updated to ${user_level} by ${req.user.username}`, {});
+      Logger.info('ADMIN', `User ${user.username} level updated to ${user_level} by ${req.user.username}`, {});
       res.json({
         success: true,
         message: i18n.tReq(req, 'users.success.levelUpdated')
@@ -126,15 +135,24 @@ router.put('/admin/users/:userId/status', authMiddleware, requireAdmin, async (r
       });
     }
 
+    // Get user information for logging
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: i18n.tReq(req, 'auth.errors.userNotFound')
+      });
+    }
+
     const updated = await User.setDisabledStatus(userId, disabled);
     
     if (updated) {
       // If disabling user, delete all their sessions to log them out immediately
       if (disabled) {
         const deletedSessions = await Session.deleteByUserId(userId);
-        Logger.info('ADMIN', `User ${userId} disabled and ${deletedSessions} session(s) deleted by ${req.user.username}`, {});
+        Logger.info('ADMIN', `User ${user.username} disabled and ${deletedSessions} session(s) deleted by ${req.user.username}`, {});
       } else {
-        Logger.info('ADMIN', `User ${userId} enabled by ${req.user.username}`, {});
+        Logger.info('ADMIN', `User ${user.username} enabled by ${req.user.username}`, {});
       }
       
       res.json({

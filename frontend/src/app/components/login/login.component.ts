@@ -55,7 +55,7 @@ export class LoginComponent {
             this.toastService.success(response.message || 'Registration successful!', 3000);
           }
           setTimeout(() => {
-            this.router.navigate(['/dashboard']);
+            this.router.navigate(['/project']);
           }, 500);
         } else {
           this.errorMessage = response.message;

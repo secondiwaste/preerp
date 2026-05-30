@@ -9,8 +9,12 @@ const connectionConfig = {
   database: process.env.DB_NAME || 'preerp_db',
   port: process.env.DB_PORT || 3306,
   waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
+  connectionLimit: 100,  // Increased from 10 to support high concurrency
+  queueLimit: 0,
+  maxIdle: 10,  // Maximum idle connections
+  idleTimeout: 60000,  // 60 seconds
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 0
 };
 
 // Only include password if it's set and not empty

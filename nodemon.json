@@ -1,0 +1,6 @@
+{
+  "watch": ["server", "migrations", ".env"],
+  "ignore": ["frontend", "node_modules", "*.test.js", "*.spec.js"],
+  "ext": "js,json,sql",
+  "exec": "node server/index.js"
+}

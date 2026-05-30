@@ -1,0 +1,207 @@
+<div class="container">
+  <app-navbar></app-navbar>
+  
+  <div class="content">
+    <div class="card">
+      <div class="header">
+        <div>
+          <h2>{{ 'projects.title' | translate }}</h2>
+          <p class="subtitle">{{ 'projects.subtitle' | translate }}</p>
+        </div>
+        <button 
+          *ngIf="canEdit" 
+          class="btn-primary" 
+          (click)="openCreateModal()"
+        >
+          {{ 'projects.addNew' | translate }}
+        </button>
+      </div>
+      
+      <div class="search-box" *ngIf="!loading">
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          (input)="onSearchChange()"
+          [placeholder]="'projects.searchPlaceholder' | translate"
+          class="search-input"
+        />
+      </div>
+      
+      <div class="filter-buttons" *ngIf="!loading">
+        <button 
+          class="btn-filter" 
+          [class.active]="closedFilter === 'false'"
+          (click)="closedFilter = 'false'; onClosedFilterChange()"
+        >
+          {{ 'projects.showActive' | translate }}
+        </button>
+        <button 
+          class="btn-filter" 
+          [class.active]="closedFilter === 'true'"
+          (click)="closedFilter = 'true'; onClosedFilterChange()"
+        >
+          {{ 'projects.showClosed' | translate }}
+        </button>
+        <button 
+          class="btn-filter" 
+          [class.active]="closedFilter === 'all'"
+          (click)="closedFilter = 'all'; onClosedFilterChange()"
+        >
+          {{ 'projects.showAll' | translate }}
+        </button>
+      </div>
+      
+      <div *ngIf="loading" class="loading">{{ 'dashboard.loading' | translate }}</div>
+      
+      <div *ngIf="!loading && projects.length > 0" class="projects-table">
+        <table>
+          <thead>
+            <tr>
+              <th class="sortable" (click)="sortBy('munkaszam')">
+                {{ 'projects.munkaszam' | translate }} <span class="sort-icon">{{ getSortIcon('munkaszam') }}</span>
+              </th>
+              <th class="sortable" (click)="sortBy('munka_megnevezes')">
+                {{ 'projects.munkaMegnevezes' | translate }} <span class="sort-icon">{{ getSortIcon('munka_megnevezes') }}</span>
+              </th>
+              <th class="sortable" (click)="sortBy('megrendelo_neve')">
+                {{ 'projects.megrendeloNeve' | translate }} <span class="sort-icon">{{ getSortIcon('megrendelo_neve') }}</span>
+              </th>
+              <th class="sortable" (click)="sortBy('created_at')">
+                {{ 'projects.createdAt' | translate }} <span class="sort-icon">{{ getSortIcon('created_at') }}</span>
+              </th>
+              <th *ngIf="canEdit">{{ 'projects.actions' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let project of projects" [class.closed-project]="project.closed">
+              <td>
+                <a class="project-link" (click)="viewProjectDetails(project.id)">
+                  <strong>{{ project.munkaszam }}</strong>
+                  <span *ngIf="project.closed" class="closed-badge">{{ 'projects.closedStatus' | translate }}</span>
+                </a>
+              </td>
+              <td>{{ project.munka_megnevezes }}</td>
+              <td>{{ project.megrendelo_neve || '-' }}</td>
+              <td>{{ formatDate(project.created_at) }}</td>
+              <td *ngIf="canEdit">
+                <button 
+                  class="btn-small" 
+                  (click)="openEditModal(project)"
+                  [title]="'projects.edit' | translate"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button 
+                  *ngIf="!project.closed"
+                  class="btn-small btn-warning" 
+                  (click)="toggleProjectClosed(project)"
+                  [title]="'projects.closeProject' | translate"
+                >
+                  <mat-icon>lock</mat-icon>
+                </button>
+                <button 
+                  *ngIf="project.closed"
+                  class="btn-small btn-success" 
+                  (click)="toggleProjectClosed(project)"
+                  [title]="'projects.reopenProject' | translate"
+                >
+                  <mat-icon>lock_open</mat-icon>
+                </button>
+                <button 
+                  class="btn-small btn-danger" 
+                  (click)="deleteProject(project)"
+                  [title]="'projects.delete' | translate"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <p *ngIf="!loading && projects.length === 0">{{ 'projects.noProjects' | translate }}</p>
+    </div>
+  </div>
+
+  <!-- Create/Edit Modal -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ isEditMode ? ('projects.editProject' | translate) : ('projects.createProject' | translate) }}</h3>
+        <button class="close-btn" (click)="closeModal()">&times;</button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="form-group">
+          <label>{{ 'projects.munkaszam' | translate }} *</label>
+          <input 
+            type="text" 
+            [(ngModel)]="formData.munkaszam" 
+            [placeholder]="'projects.munkaszam' | translate"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>{{ 'projects.munkaMegnevezes' | translate }} *</label>
+          <input 
+            type="text" 
+            [(ngModel)]="formData.munka_megnevezes" 
+            [placeholder]="'projects.munkaMegnevezes' | translate"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>{{ 'projects.reszletek' | translate }}</label>
+          <textarea 
+            [(ngModel)]="formData.reszletek" 
+            [placeholder]="'projects.reszletek' | translate"
+            rows="3"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>{{ 'projects.megrendeloNeve' | translate }}</label>
+          <input 
+            type="text" 
+            [(ngModel)]="formData.megrendelo_neve" 
+            [placeholder]="'projects.megrendeloNeve' | translate"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>{{ 'projects.megrendeloAdatai' | translate }}</label>
+          <textarea 
+            [(ngModel)]="formData.megrendelo_adatai" 
+            [placeholder]="'projects.megrendeloAdatai' | translate"
+            rows="3"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>{{ 'projects.szallitasiCim' | translate }}</label>
+          <textarea 
+            [(ngModel)]="formData.szallitasi_cim" 
+            [placeholder]="'projects.szallitasiCim' | translate"
+            rows="2"
+          ></textarea>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="closeModal()">
+          {{ 'projects.cancel' | translate }}
+        </button>
+        <button 
+          class="btn-primary" 
+          (click)="saveProject()"
+          [disabled]="saving"
+        >
+          {{ saving ? ('projects.saving' | translate) : ('projects.save' | translate) }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

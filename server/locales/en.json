@@ -67,5 +67,62 @@
       "userDisabled": "User disabled successfully",
       "userEnabled": "User enabled successfully"
     }
+  },
+  "projects": {
+    "errors": {
+      "loadFailed": "Failed to load projects",
+      "notFound": "Project not found",
+      "requiredFields": "Munkaszám and Munka megnevezése are required",
+      "munkaszamExists": "A project with this munkaszám already exists",
+      "createFailed": "Failed to create project",
+      "updateFailed": "Failed to update project",
+      "deleteFailed": "Failed to delete project"
+    },
+    "success": {
+      "created": "Project created successfully",
+      "updated": "Project updated successfully",
+      "deleted": "Project deleted successfully",
+      "closed": "Project closed successfully",
+      "reopened": "Project reopened successfully"
+    }
+  },
+  "elemcsoport": {
+    "name_required": "Element group name is required",
+    "not_found": "Element group not found",
+    "created_successfully": "Element group created successfully",
+    "updated_successfully": "Element group updated successfully",
+    "deleted_successfully": "Element group deleted successfully"
+  },
+  "item": {
+    "not_found": "Item not found",
+    "created_successfully": "Item created successfully",
+    "updated_successfully": "Item updated successfully",
+    "deleted_successfully": "Item deleted successfully"
+  },
+  "betonozasiNaplo": {
+    "not_found": "Concrete pouring log entry not found",
+    "created_successfully": "Concrete pouring log entry created successfully",
+    "updated_successfully": "Concrete pouring log entry updated successfully",
+    "deleted_successfully": "Concrete pouring log entry deleted successfully",
+    "datumRequired": "Date is required"
+  },
+  "raktar": {
+    "not_found": "Warehouse receipt not found",
+    "created_successfully": "Warehouse receipt created successfully",
+    "updated_successfully": "Warehouse receipt updated successfully",
+    "deleted_successfully": "Warehouse receipt deleted successfully",
+    "datumRequired": "Date is required",
+    "megnevezesRequired": "Description is required"
+  },
+  "raktarElem": {
+    "not_found": "Warehouse item not found",
+    "created_successfully": "Warehouse item created successfully",
+    "updated_successfully": "Warehouse item updated successfully",
+    "deleted_successfully": "Warehouse item deleted successfully"
+  },
+  "common": {
+    "server_error": "Internal server error",
+    "forbidden": "Access forbidden",
+    "error": "An error occurred"
   }
 }

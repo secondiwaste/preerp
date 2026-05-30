@@ -5,16 +5,29 @@
       <span></span>
       <span></span>
     </button>
-    <div class="navbar-brand" [routerLink]="['/dashboard']">PreERP</div>
+    <div class="navbar-brand" [routerLink]="['/project']">PreERP</div>
     
     <!-- Dropdown Menu -->
     <div class="dropdown-menu" [class.open]="isMenuOpen">
       <div class="menu-section" *ngFor="let item of visibleMenuItems">
+        <!-- Regular route link -->
         <a 
-          *ngIf="!item.children"
+          *ngIf="!item.children && item.route"
           [routerLink]="[item.route]" 
           class="menu-item"
           routerLinkActive="active"
+          (click)="closeMenu()"
+        >
+          <span class="menu-icon" *ngIf="item.icon">{{ item.icon }}</span>
+          {{ item.label | translate }}
+        </a>
+        
+        <!-- External link -->
+        <a 
+          *ngIf="!item.children && item.href"
+          [href]="item.href"
+          [target]="item.external ? '_blank' : '_self'"
+          class="menu-item"
           (click)="closeMenu()"
         >
           <span class="menu-icon" *ngIf="item.icon">{{ item.icon }}</span>

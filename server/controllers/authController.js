@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
 const Session = require('../models/Session');
@@ -6,16 +7,23 @@ const i18n = require('../config/i18n');
 const Logger = require('../utils/logger');
 require('dotenv').config();
 
-// Generate JWT token
+// Generate JWT token with unique identifier
 const generateToken = (userId, username, userLevel) => {
   Logger.debug('AUTH', `Generating token for user: ${username} (ID: ${userId}, Level: ${userLevel})`, { consoleOnly: true });
   try {
+    // Generate unique JWT ID to prevent duplicate tokens during concurrent logins
+    const jti = crypto.randomUUID();
     const token = jwt.sign(
-      { id: userId, username, user_level: userLevel },
+      { 
+        id: userId, 
+        username, 
+        user_level: userLevel,
+        jti: jti  // JWT ID - ensures uniqueness even for same user/timestamp
+      },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN }
     );
-    Logger.debug('AUTH', `Token generated, expires in: ${process.env.JWT_EXPIRES_IN}`, { consoleOnly: true });
+    Logger.debug('AUTH', `Token generated with JTI: ${jti}, expires in: ${process.env.JWT_EXPIRES_IN}`, { consoleOnly: true });
     return token;
   } catch (error) {
     Logger.error('AUTH', `Error generating token: ${error.message}`, { consoleOnly: true, metadata: { stack: error.stack } });

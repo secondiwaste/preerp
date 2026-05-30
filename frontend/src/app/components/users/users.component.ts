@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { MatIconModule } from '@angular/material/icon';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { ToastService } from '../../services/toast.service';
@@ -23,7 +24,7 @@ interface UpdateLevelResponse {
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, NavbarComponent, TranslatePipe, FormsModule],
+  imports: [CommonModule, NavbarComponent, TranslatePipe, FormsModule, MatIconModule],
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css']
 })

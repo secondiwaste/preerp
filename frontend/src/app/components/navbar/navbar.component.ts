@@ -6,10 +6,12 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 
 interface MenuItem {
   label: string;
-  route: string;
+  route?: string;
+  href?: string;
   icon?: string;
   requiredRole?: 'user' | 'moderator' | 'administrator';
   children?: MenuItem[];
+  external?: boolean;
 }
 
 @Component({
@@ -25,9 +27,19 @@ export class NavbarComponent implements OnInit {
 
   menuItems: MenuItem[] = [
     {
-      label: 'menu.dashboard',
-      route: '/dashboard',
-      icon: '📊'
+      label: 'menu.projects',
+      route: '/project',
+      icon: '📁'
+    },
+    {
+      label: 'menu.betonozasiNaplo',
+      route: '/betonozasi-naplo',
+      icon: '📋'
+    },
+    {
+      label: 'menu.raktar',
+      route: '/raktar',
+      icon: '📦'
     },
     {
       label: 'menu.users',
@@ -36,27 +48,16 @@ export class NavbarComponent implements OnInit {
       requiredRole: 'administrator'
     },
     {
-      label: 'menu.moderation',
-      route: '/moderation',
-      icon: '🛡️',
-      requiredRole: 'moderator'
-    },
-    {
-      label: 'menu.reports',
-      route: '/reports',
-      icon: '📈',
-      requiredRole: 'moderator'
-    },
-    {
       label: 'menu.logs',
       route: '/logs',
-      icon: '📋',
+      icon: '📊',
       requiredRole: 'administrator'
     },
     {
-      label: 'menu.settings',
-      route: '/settings',
-      icon: '⚙️'
+      label: 'menu.userManual',
+      href: '/docs/',
+      icon: '📖',
+      external: true
     }
   ];
 

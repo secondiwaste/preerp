@@ -1,0 +1,745 @@
+<div class="container">
+  <app-navbar></app-navbar>
+  
+  <div class="content">
+    <div class="card">
+      <div class="header">
+        <div>
+          <h2>{{ 'betonozasiNaplo.title' | translate }}</h2>
+          <p class="subtitle">{{ 'betonozasiNaplo.subtitle' | translate }}</p>
+        </div>
+        <button 
+          *ngIf="canEdit" 
+          class="btn-primary" 
+          (click)="createNewEntry()"
+        >
+          {{ 'betonozasiNaplo.addNew' | translate }}
+        </button>
+      </div>
+      
+      <div class="filters-row">
+        <div class="year-month-filter">
+          <label>{{ 'betonozasiNaplo.selectMonth' | translate }}</label>
+          <input 
+            id="month-picker-input"
+            type="text" 
+            [value]="selectedYearMonth"
+            readonly
+            class="month-input"
+          />
+        </div>
+        
+        <div class="search-box">
+          <input 
+            type="text" 
+            [(ngModel)]="searchQuery" 
+            (input)="onSearchChange()"
+            [placeholder]="'betonozasiNaplo.searchPlaceholder' | translate"
+            class="search-input"
+          />
+        </div>
+      </div>
+      
+      <div *ngIf="loading" class="loading">{{ 'common.loading' | translate }}</div>
+      
+      <div *ngIf="!loading && entries.length > 0" class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th *ngIf="canEdit" class="actions-column">{{ 'common.actions' | translate }}</th>
+              <th class="sortable sticky-datum" (click)="sortBy('datum')">
+                {{ 'betonozasiNaplo.datum' | translate }} <span class="sort-icon">{{ getSortIcon('datum') }}</span>
+              </th>
+              <th class="sticky-rendszam">{{ 'betonozasiNaplo.rendszam' | translate }}</th>
+              <th class="sticky-szallitolevel">{{ 'betonozasiNaplo.szallitolevelSzama' | translate }}</th>
+              <th class="sortable" (click)="sortBy('betonuzem')">
+                {{ 'betonozasiNaplo.betonuzem' | translate }} <span class="sort-icon">{{ getSortIcon('betonuzem') }}</span>
+              </th>
+              <th class="sortable" (click)="sortBy('betonminoseg')">
+                {{ 'betonozasiNaplo.betonminoseg' | translate }} <span class="sort-icon">{{ getSortIcon('betonminoseg') }}</span>
+              </th>
+              <th>{{ 'betonozasiNaplo.kitetiOsztalyok' | translate }}</th>
+              <th>{{ 'betonozasiNaplo.maxSzemnagysag' | translate }}</th>
+              <th>{{ 'betonozasiNaplo.cementfajta' | translate }}</th>
+              <th>{{ 'betonozasiNaplo.receptszam' | translate }}</th>
+              <th>{{ 'betonozasiNaplo.homerseklet' | translate }}</th>
+              <th>{{ 'betonozasiNaplo.keveresKezdete' | translate }}</th>
+              <th>{{ 'betonozasiNaplo.keveresVege' | translate }}</th>
+              <th>{{ 'betonozasiNaplo.erkezesIdeje' | translate }}</th>
+              <th>{{ 'betonozasiNaplo.terules' | translate }}</th>
+              <th>{{ 'betonozasiNaplo.uritesKezdete' | translate }}</th>
+              <th>{{ 'betonozasiNaplo.uritesVege' | translate }}</th>
+              <th>{{ 'betonozasiNaplo.idonTuliVarakozas' | translate }}</th>
+              <th>{{ 'betonozasiNaplo.elmeLetiMennyiseg' | translate }}</th>
+              <th>{{ 'betonozasiNaplo.kertMennyiseg' | translate }}</th>
+              <th>{{ 'betonozasiNaplo.adalekszerek' | translate }}</th>
+              <th>{{ 'betonozasiNaplo.formalevalaszto' | translate }}</th>
+              <th>{{ 'betonozasiNaplo.megjegyzes' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let entry of entries">
+              <!-- Actions -->
+              <td *ngIf="canEdit" class="actions-column">
+                <button 
+                  class="btn-small btn-danger" 
+                  (click)="deleteEntry(entry)"
+                  [title]="'common.delete' | translate"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+              
+              <!-- Datum -->
+              <td class="sticky-datum">
+                <div 
+                  *ngIf="canEdit && !isEditingCell(entry.id, 'datum')"
+                  class="table-cell"
+                  (click)="startEditCell(entry.id, 'datum')"
+                >
+                  {{ formatDate(entry.datum) }}
+                </div>
+                <input 
+                  *ngIf="canEdit && isEditingCell(entry.id, 'datum')"
+                  type="date" 
+                  [value]="getDateForInput(entry.datum)"
+                  (input)="entry.datum = $any($event.target).value"
+                  (blur)="stopEditCell(entry, 'datum')"
+                  (keydown)="onCellKeydown($event, entry, 'datum')"
+                  [attr.data-entry-id]="entry.id"
+                  [attr.data-col]="'datum'"
+                  class="table-input"
+                />
+                <span *ngIf="!canEdit">{{ formatDate(entry.datum) }}</span>
+              </td>
+              
+              <!-- Rendszam -->
+              <td class="sticky-rendszam">
+                <div 
+                  *ngIf="canEdit && !isEditingCell(entry.id, 'rendszam')"
+                  class="table-cell"
+                  (click)="startEditCell(entry.id, 'rendszam')"
+                >
+                  {{ entry.rendszam }}
+                </div>
+                <input 
+                  *ngIf="canEdit && isEditingCell(entry.id, 'rendszam')"
+                  type="text" 
+                  [(ngModel)]="entry.rendszam" 
+                  (blur)="stopEditCell(entry, 'rendszam')"
+                  (keydown)="onCellKeydown($event, entry, 'rendszam')"
+                  [attr.data-entry-id]="entry.id"
+                  [attr.data-col]="'rendszam'"
+                  [attr.list]="'rendszam-autocomplete'"
+                  class="table-input"
+                />
+                <span *ngIf="!canEdit">{{ entry.rendszam }}</span>
+              </td>
+              
+              <!-- Szallitolevel szama -->
+              <td class="sticky-szallitolevel">
+                <div 
+                  *ngIf="canEdit && !isEditingCell(entry.id, 'szallitolevel_szama')"
+                  class="table-cell"
+                  (click)="startEditCell(entry.id, 'szallitolevel_szama')"
+                >
+                  {{ entry.szallitolevel_szama }}
+                </div>
+                <input 
+                  *ngIf="canEdit && isEditingCell(entry.id, 'szallitolevel_szama')"
+                  type="text" 
+                  [(ngModel)]="entry.szallitolevel_szama" 
+                  (blur)="stopEditCell(entry, 'szallitolevel_szama')"
+                  (keydown)="onCellKeydown($event, entry, 'szallitolevel_szama')"
+                  [attr.data-entry-id]="entry.id"
+                  [attr.data-col]="'szallitolevel_szama'"
+                  class="table-input"
+                />
+                <span *ngIf="!canEdit">{{ entry.szallitolevel_szama }}</span>
+              </td>
+              
+              <!-- Betonuzem -->
+              <td>
+                <div 
+                  *ngIf="canEdit && !isEditingCell(entry.id, 'betonuzem')"
+                  class="table-cell"
+                  (click)="startEditCell(entry.id, 'betonuzem')"
+                >
+                  {{ entry.betonuzem }}
+                </div>
+                <input 
+                  *ngIf="canEdit && isEditingCell(entry.id, 'betonuzem')"
+                  type="text" 
+                  [(ngModel)]="entry.betonuzem" 
+                  (blur)="stopEditCell(entry, 'betonuzem')"
+                  (keydown)="onCellKeydown($event, entry, 'betonuzem')"
+                  [attr.data-entry-id]="entry.id"
+                  [attr.data-col]="'betonuzem'"
+                  class="table-input"
+                />
+                <span *ngIf="!canEdit">{{ entry.betonuzem }}</span>
+              </td>
+              
+              <!-- Betonminoseg -->
+              <td>
+                <div 
+                  *ngIf="canEdit && !isEditingCell(entry.id, 'betonminoseg')"
+                  class="table-cell"
+                  (click)="startEditCell(entry.id, 'betonminoseg')"
+                >
+                  {{ entry.betonminoseg }}
+                </div>
+                <input 
+                  *ngIf="canEdit && isEditingCell(entry.id, 'betonminoseg')"
+                  type="text" 
+                  [(ngModel)]="entry.betonminoseg" 
+                  (blur)="stopEditCell(entry, 'betonminoseg')"
+                  (keydown)="onCellKeydown($event, entry, 'betonminoseg')"
+                  [attr.data-entry-id]="entry.id"
+                  [attr.data-col]="'betonminoseg'"
+                  class="table-input"
+                />
+                <span *ngIf="!canEdit">{{ entry.betonminoseg }}</span>
+              </td>
+              
+              <!-- Kiteti osztalyok -->
+              <td>
+                <div 
+                  *ngIf="canEdit && !isEditingCell(entry.id, 'kiteti_osztalyok')"
+                  class="table-cell"
+                  (click)="startEditCell(entry.id, 'kiteti_osztalyok')"
+                >
+                  {{ entry.kiteti_osztalyok }}
+                </div>
+                <input 
+                  *ngIf="canEdit && isEditingCell(entry.id, 'kiteti_osztalyok')"
+                  type="text" 
+                  [(ngModel)]="entry.kiteti_osztalyok" 
+                  (blur)="stopEditCell(entry, 'kiteti_osztalyok')"
+                  (keydown)="onCellKeydown($event, entry, 'kiteti_osztalyok')"
+                  [attr.data-entry-id]="entry.id"
+                  [attr.data-col]="'kiteti_osztalyok'"
+                  class="table-input"
+                />
+                <span *ngIf="!canEdit">{{ entry.kiteti_osztalyok }}</span>
+              </td>
+              
+              <!-- Maximalis szemnagysag -->
+              <td>
+                <div 
+                  *ngIf="canEdit && !isEditingCell(entry.id, 'maximalis_szemnagysag')"
+                  class="table-cell"
+                  (click)="startEditCell(entry.id, 'maximalis_szemnagysag')"
+                >
+                  {{ entry.maximalis_szemnagysag }}
+                </div>
+                <input 
+                  *ngIf="canEdit && isEditingCell(entry.id, 'maximalis_szemnagysag')"
+                  type="text" 
+                  [(ngModel)]="entry.maximalis_szemnagysag" 
+                  (blur)="stopEditCell(entry, 'maximalis_szemnagysag')"
+                  (keydown)="onCellKeydown($event, entry, 'maximalis_szemnagysag')"
+                  [attr.data-entry-id]="entry.id"
+                  [attr.data-col]="'maximalis_szemnagysag'"
+                  class="table-input"
+                />
+                <span *ngIf="!canEdit">{{ entry.maximalis_szemnagysag }}</span>
+              </td>
+              
+              <!-- Cementfajta -->
+              <td>
+                <div 
+                  *ngIf="canEdit && !isEditingCell(entry.id, 'cementfajta')"
+                  class="table-cell"
+                  (click)="startEditCell(entry.id, 'cementfajta')"
+                >
+                  {{ entry.cementfajta }}
+                </div>
+                <input 
+                  *ngIf="canEdit && isEditingCell(entry.id, 'cementfajta')"
+                  type="text" 
+                  [(ngModel)]="entry.cementfajta" 
+                  (blur)="stopEditCell(entry, 'cementfajta')"
+                  (keydown)="onCellKeydown($event, entry, 'cementfajta')"
+                  [attr.data-entry-id]="entry.id"
+                  [attr.data-col]="'cementfajta'"
+                  class="table-input"
+                />
+                <span *ngIf="!canEdit">{{ entry.cementfajta }}</span>
+              </td>
+              
+              <!-- Receptszam -->
+              <td>
+                <div 
+                  *ngIf="canEdit && !isEditingCell(entry.id, 'receptszam')"
+                  class="table-cell"
+                  (click)="startEditCell(entry.id, 'receptszam')"
+                >
+                  {{ entry.receptszam }}
+                </div>
+                <input 
+                  *ngIf="canEdit && isEditingCell(entry.id, 'receptszam')"
+                  type="text" 
+                  [(ngModel)]="entry.receptszam" 
+                  (blur)="stopEditCell(entry, 'receptszam')"
+                  (keydown)="onCellKeydown($event, entry, 'receptszam')"
+                  [attr.data-entry-id]="entry.id"
+                  [attr.data-col]="'receptszam'"
+                  class="table-input"
+                />
+                <span *ngIf="!canEdit">{{ entry.receptszam }}</span>
+              </td>
+              
+              <!-- Levego beton homerseklete -->
+              <td>
+                <div 
+                  *ngIf="canEdit && !isEditingCell(entry.id, 'levego_beton_homerseklete')"
+                  class="table-cell"
+                  (click)="startEditCell(entry.id, 'levego_beton_homerseklete')"
+                >
+                  {{ entry.levego_beton_homerseklete !== null && entry.levego_beton_homerseklete !== undefined ? entry.levego_beton_homerseklete + ' °C' : '' }}
+                </div>
+                <input 
+                  *ngIf="canEdit && isEditingCell(entry.id, 'levego_beton_homerseklete')"
+                  type="number" 
+                  step="0.1"
+                  [(ngModel)]="entry.levego_beton_homerseklete" 
+                  (blur)="stopEditCell(entry, 'levego_beton_homerseklete')"
+                  (keydown)="onCellKeydown($event, entry, 'levego_beton_homerseklete')"
+                  [attr.data-entry-id]="entry.id"
+                  [attr.data-col]="'levego_beton_homerseklete'"
+                  class="table-input"
+                />
+                <span *ngIf="!canEdit">{{ entry.levego_beton_homerseklete !== null && entry.levego_beton_homerseklete !== undefined ? entry.levego_beton_homerseklete + ' °C' : '' }}</span>
+              </td>
+              
+              <!-- Keveres kezdete -->
+              <td>
+                <div 
+                  *ngIf="canEdit && !isEditingCell(entry.id, 'keveres_kezdete')"
+                  class="table-cell"
+                  (click)="startEditCell(entry.id, 'keveres_kezdete')"
+                >
+                  {{ formatTime(entry.keveres_kezdete) }}
+                </div>
+                <input 
+                  *ngIf="canEdit && isEditingCell(entry.id, 'keveres_kezdete')"
+                  type="text" 
+                  [(ngModel)]="entry.keveres_kezdete" 
+                  (blur)="stopEditCell(entry, 'keveres_kezdete')"
+                  (keydown)="onCellKeydown($event, entry, 'keveres_kezdete')"
+                  [attr.data-entry-id]="entry.id"
+                  [attr.data-col]="'keveres_kezdete'"
+                  class="table-input"
+                  placeholder="HH:MM"
+                />
+                <span *ngIf="!canEdit">{{ formatTime(entry.keveres_kezdete) }}</span>
+              </td>
+              
+              <!-- Keveres vege -->
+              <td>
+                <div 
+                  *ngIf="canEdit && !isEditingCell(entry.id, 'keveres_vege')"
+                  class="table-cell"
+                  (click)="startEditCell(entry.id, 'keveres_vege')"
+                >
+                  {{ formatTime(entry.keveres_vege) }}
+                </div>
+                <input 
+                  *ngIf="canEdit && isEditingCell(entry.id, 'keveres_vege')"
+                  type="text" 
+                  [(ngModel)]="entry.keveres_vege" 
+                  (blur)="stopEditCell(entry, 'keveres_vege')"
+                  (keydown)="onCellKeydown($event, entry, 'keveres_vege')"
+                  [attr.data-entry-id]="entry.id"
+                  [attr.data-col]="'keveres_vege'"
+                  class="table-input"
+                  placeholder="HH:MM"
+                />
+                <span *ngIf="!canEdit">{{ formatTime(entry.keveres_vege) }}</span>
+              </td>
+              
+              <!-- Erkezes ideje -->
+              <td>
+                <div 
+                  *ngIf="canEdit && !isEditingCell(entry.id, 'erkezes_ideje')"
+                  class="table-cell"
+                  (click)="startEditCell(entry.id, 'erkezes_ideje')"
+                >
+                  {{ formatTime(entry.erkezes_ideje) }}
+                </div>
+                <input 
+                  *ngIf="canEdit && isEditingCell(entry.id, 'erkezes_ideje')"
+                  type="text" 
+                  [(ngModel)]="entry.erkezes_ideje" 
+                  (blur)="stopEditCell(entry, 'erkezes_ideje')"
+                  (keydown)="onCellKeydown($event, entry, 'erkezes_ideje')"
+                  [attr.data-entry-id]="entry.id"
+                  [attr.data-col]="'erkezes_ideje'"
+                  class="table-input"
+                  placeholder="HH:MM"
+                />
+                <span *ngIf="!canEdit">{{ formatTime(entry.erkezes_ideje) }}</span>
+              </td>
+              
+              <!-- Terules -->
+              <td>
+                <div 
+                  *ngIf="canEdit && !isEditingCell(entry.id, 'terules')"
+                  class="table-cell"
+                  (click)="startEditCell(entry.id, 'terules')"
+                >
+                  {{ entry.terules !== null && entry.terules !== undefined ? entry.terules + ' cm' : '' }}
+                </div>
+                <input 
+                  *ngIf="canEdit && isEditingCell(entry.id, 'terules')"
+                  type="number" 
+                  step="0.1"
+                  [(ngModel)]="entry.terules" 
+                  (blur)="stopEditCell(entry, 'terules')"
+                  (keydown)="onCellKeydown($event, entry, 'terules')"
+                  [attr.data-entry-id]="entry.id"
+                  [attr.data-col]="'terules'"
+                  class="table-input"
+                />
+                <span *ngIf="!canEdit">{{ entry.terules !== null && entry.terules !== undefined ? entry.terules + ' cm' : '' }}</span>
+              </td>
+              
+              <!-- Urites kezdete -->
+              <td>
+                <div 
+                  *ngIf="canEdit && !isEditingCell(entry.id, 'urites_kezdete')"
+                  class="table-cell"
+                  (click)="startEditCell(entry.id, 'urites_kezdete')"
+                >
+                  {{ formatTime(entry.urites_kezdete) }}
+                </div>
+                <input 
+                  *ngIf="canEdit && isEditingCell(entry.id, 'urites_kezdete')"
+                  type="text" 
+                  [(ngModel)]="entry.urites_kezdete" 
+                  (blur)="stopEditCell(entry, 'urites_kezdete')"
+                  (keydown)="onCellKeydown($event, entry, 'urites_kezdete')"
+                  [attr.data-entry-id]="entry.id"
+                  [attr.data-col]="'urites_kezdete'"
+                  class="table-input"
+                  placeholder="HH:MM"
+                />
+                <span *ngIf="!canEdit">{{ formatTime(entry.urites_kezdete) }}</span>
+              </td>
+              
+              <!-- Urites vege -->
+              <td>
+                <div 
+                  *ngIf="canEdit && !isEditingCell(entry.id, 'urites_vege')"
+                  class="table-cell"
+                  (click)="startEditCell(entry.id, 'urites_vege')"
+                >
+                  {{ formatTime(entry.urites_vege) }}
+                </div>
+                <input 
+                  *ngIf="canEdit && isEditingCell(entry.id, 'urites_vege')"
+                  type="text" 
+                  [(ngModel)]="entry.urites_vege" 
+                  (blur)="stopEditCell(entry, 'urites_vege')"
+                  (keydown)="onCellKeydown($event, entry, 'urites_vege')"
+                  [attr.data-entry-id]="entry.id"
+                  [attr.data-col]="'urites_vege'"
+                  class="table-input"
+                  placeholder="HH:MM"
+                />
+                <span *ngIf="!canEdit">{{ formatTime(entry.urites_vege) }}</span>
+              </td>
+              
+              <!-- Idon tuli varakozas -->
+              <td>
+                <div 
+                  *ngIf="canEdit && !isEditingCell(entry.id, 'idon_tuli_varakozas')"
+                  class="table-cell"
+                  (click)="startEditCell(entry.id, 'idon_tuli_varakozas')"
+                >
+                  {{ entry.idon_tuli_varakozas !== null && entry.idon_tuli_varakozas !== undefined ? entry.idon_tuli_varakozas + ' perc' : '' }}
+                </div>
+                <input 
+                  *ngIf="canEdit && isEditingCell(entry.id, 'idon_tuli_varakozas')"
+                  type="number" 
+                  [(ngModel)]="entry.idon_tuli_varakozas" 
+                  (blur)="stopEditCell(entry, 'idon_tuli_varakozas')"
+                  (keydown)="onCellKeydown($event, entry, 'idon_tuli_varakozas')"
+                  [attr.data-entry-id]="entry.id"
+                  [attr.data-col]="'idon_tuli_varakozas'"
+                  class="table-input"
+                />
+                <span *ngIf="!canEdit">{{ entry.idon_tuli_varakozas !== null && entry.idon_tuli_varakozas !== undefined ? entry.idon_tuli_varakozas + ' perc' : '' }}</span>
+              </td>
+              
+              <!-- Elmeleti mennyiseg -->
+              <td>
+                <div 
+                  *ngIf="canEdit && !isEditingCell(entry.id, 'elmeleti_mennyiseg')"
+                  class="table-cell"
+                  (click)="startEditCell(entry.id, 'elmeleti_mennyiseg')"
+                >
+                  {{ entry.elmeleti_mennyiseg !== null && entry.elmeleti_mennyiseg !== undefined ? entry.elmeleti_mennyiseg + ' m³' : '' }}
+                </div>
+                <input 
+                  *ngIf="canEdit && isEditingCell(entry.id, 'elmeleti_mennyiseg')"
+                  type="number" 
+                  step="0.001"
+                  [(ngModel)]="entry.elmeleti_mennyiseg" 
+                  (blur)="stopEditCell(entry, 'elmeleti_mennyiseg')"
+                  (keydown)="onCellKeydown($event, entry, 'elmeleti_mennyiseg')"
+                  [attr.data-entry-id]="entry.id"
+                  [attr.data-col]="'elmeleti_mennyiseg'"
+                  class="table-input"
+                />
+                <span *ngIf="!canEdit">{{ entry.elmeleti_mennyiseg !== null && entry.elmeleti_mennyiseg !== undefined ? entry.elmeleti_mennyiseg + ' m³' : '' }}</span>
+              </td>
+              
+              <!-- Kert mennyiseg -->
+              <td>
+                <div 
+                  *ngIf="canEdit && !isEditingCell(entry.id, 'kert_mennyiseg')"
+                  class="table-cell"
+                  (click)="startEditCell(entry.id, 'kert_mennyiseg')"
+                >
+                  {{ entry.kert_mennyiseg !== null && entry.kert_mennyiseg !== undefined ? entry.kert_mennyiseg + ' m³' : '' }}
+                </div>
+                <input 
+                  *ngIf="canEdit && isEditingCell(entry.id, 'kert_mennyiseg')"
+                  type="number" 
+                  step="0.001"
+                  [(ngModel)]="entry.kert_mennyiseg" 
+                  (blur)="stopEditCell(entry, 'kert_mennyiseg')"
+                  (keydown)="onCellKeydown($event, entry, 'kert_mennyiseg')"
+                  [attr.data-entry-id]="entry.id"
+                  [attr.data-col]="'kert_mennyiseg'"
+                  class="table-input"
+                />
+                <span *ngIf="!canEdit">{{ entry.kert_mennyiseg !== null && entry.kert_mennyiseg !== undefined ? entry.kert_mennyiseg + ' m³' : '' }}</span>
+              </td>
+              
+              <!-- Adalekszerek -->
+              <td>
+                <div 
+                  *ngIf="canEdit && !isEditingCell(entry.id, 'adalekszerek')"
+                  class="table-cell"
+                  (click)="startEditCell(entry.id, 'adalekszerek')"
+                >
+                  {{ entry.adalekszerek }}
+                </div>
+                <input 
+                  *ngIf="canEdit && isEditingCell(entry.id, 'adalekszerek')"
+                  type="text" 
+                  [(ngModel)]="entry.adalekszerek" 
+                  (blur)="stopEditCell(entry, 'adalekszerek')"
+                  (keydown)="onCellKeydown($event, entry, 'adalekszerek')"
+                  [attr.data-entry-id]="entry.id"
+                  [attr.data-col]="'adalekszerek'"
+                  class="table-input"
+                />
+                <span *ngIf="!canEdit">{{ entry.adalekszerek }}</span>
+              </td>
+              
+              <!-- Formalevalaszto -->
+              <td>
+                <div 
+                  *ngIf="canEdit && !isEditingCell(entry.id, 'formalevalaszto')"
+                  class="table-cell"
+                  (click)="startEditCell(entry.id, 'formalevalaszto')"
+                >
+                  {{ entry.formalevalaszto }}
+                </div>
+                <input 
+                  *ngIf="canEdit && isEditingCell(entry.id, 'formalevalaszto')"
+                  type="text" 
+                  [(ngModel)]="entry.formalevalaszto" 
+                  (blur)="stopEditCell(entry, 'formalevalaszto')"
+                  (keydown)="onCellKeydown($event, entry, 'formalevalaszto')"
+                  [attr.data-entry-id]="entry.id"
+                  [attr.data-col]="'formalevalaszto'"
+                  class="table-input"
+                />
+                <span *ngIf="!canEdit">{{ entry.formalevalaszto }}</span>
+              </td>
+              
+              <!-- Megjegyzes -->
+              <td>
+                <div 
+                  *ngIf="canEdit && !isEditingCell(entry.id, 'megjegyzes')"
+                  class="table-cell"
+                  (click)="startEditCell(entry.id, 'megjegyzes')"
+                >
+                  {{ entry.megjegyzes }}
+                </div>
+                <input 
+                  *ngIf="canEdit && isEditingCell(entry.id, 'megjegyzes')"
+                  type="text" 
+                  [(ngModel)]="entry.megjegyzes" 
+                  (blur)="stopEditCell(entry, 'megjegyzes')"
+                  (keydown)="onCellKeydown($event, entry, 'megjegyzes')"
+                  [attr.data-entry-id]="entry.id"
+                  [attr.data-col]="'megjegyzes'"
+                  class="table-input"
+                />
+                <span *ngIf="!canEdit">{{ entry.megjegyzes }}</span>
+              </td>
+            </tr>
+          </tbody>
+          
+          <!-- Summary row -->
+          <tfoot *ngIf="!loading && entries.length > 0">
+            <tr class="summary-row">
+              <td [attr.colspan]="canEdit ? 18 : 17" class="summary-label"><strong>Összesen:</strong></td>
+              <td class="summary-value"><strong>{{ totalElmeletiMennyiseg.toFixed(2) }} m³</strong></td>
+              <td class="summary-value"><strong>{{ totalKertMennyiseg.toFixed(2) }} m³</strong></td>
+              <td colspan="3"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      
+      <div *ngIf="!loading && entries.length === 0" class="no-data">
+        {{ 'betonozasiNaplo.noEntries' | translate }}
+      </div>
+      
+      <!-- Autocomplete datalist for rendszam -->
+      <datalist id="rendszam-autocomplete">
+        <option *ngFor="let rendszam of uniqueRendszamok" [value]="rendszam">
+      </datalist>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for Create/Edit -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-content large-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ 'betonozasiNaplo.edit' | translate }}</h3>
+      <button class="close-btn" (click)="closeModal()">×</button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label>{{ 'betonozasiNaplo.datum' | translate }} *</label>
+          <input type="date" [(ngModel)]="formData.datum" required />
+        </div>
+        
+        <div class="form-group">
+          <label>{{ 'betonozasiNaplo.rendszam' | translate }}</label>
+          <input type="text" [(ngModel)]="formData.rendszam" />
+        </div>
+        
+        <div class="form-group">
+          <label>{{ 'betonozasiNaplo.szallitolevelSzama' | translate }}</label>
+          <input type="text" [(ngModel)]="formData.szallitolevel_szama" />
+        </div>
+        
+        <div class="form-group">
+          <label>{{ 'betonozasiNaplo.betonuzem' | translate }}</label>
+          <input type="text" [(ngModel)]="formData.betonuzem" />
+        </div>
+        
+        <div class="form-group">
+          <label>{{ 'betonozasiNaplo.betonminoseg' | translate }}</label>
+          <input type="text" [(ngModel)]="formData.betonminoseg" />
+        </div>
+        
+        <div class="form-group">
+          <label>{{ 'betonozasiNaplo.kitetiOsztalyok' | translate }}</label>
+          <input type="text" [(ngModel)]="formData.kiteti_osztalyok" />
+        </div>
+        
+        <div class="form-group">
+          <label>{{ 'betonozasiNaplo.maxSzemnagysag' | translate }}</label>
+          <input type="text" [(ngModel)]="formData.maximalis_szemnagysag" />
+        </div>
+        
+        <div class="form-group">
+          <label>{{ 'betonozasiNaplo.cementfajta' | translate }}</label>
+          <input type="text" [(ngModel)]="formData.cementfajta" />
+        </div>
+        
+        <div class="form-group">
+          <label>{{ 'betonozasiNaplo.receptszam' | translate }}</label>
+          <input type="text" [(ngModel)]="formData.receptszam" />
+        </div>
+        
+        <div class="form-group">
+          <label>{{ 'betonozasiNaplo.homerseklet' | translate }}</label>
+          <input type="number" step="0.1" [(ngModel)]="formData.levego_beton_homerseklete" placeholder="°C" />
+        </div>
+        
+        <div class="form-group">
+          <label>{{ 'betonozasiNaplo.keveresKezdete' | translate }}</label>
+          <input type="text" [(ngModel)]="formData.keveres_kezdete" placeholder="HH:MM" />
+        </div>
+        
+        <div class="form-group">
+          <label>{{ 'betonozasiNaplo.keveresVege' | translate }}</label>
+          <input type="text" [(ngModel)]="formData.keveres_vege" placeholder="HH:MM" />
+        </div>
+        
+        <div class="form-group">
+          <label>{{ 'betonozasiNaplo.erkezesIdeje' | translate }}</label>
+          <input type="text" [(ngModel)]="formData.erkezes_ideje" placeholder="HH:MM" />
+        </div>
+        
+        <div class="form-group">
+          <label>{{ 'betonozasiNaplo.terules' | translate }}</label>
+          <input type="number" step="0.1" [(ngModel)]="formData.terules" placeholder="cm" />
+        </div>
+        
+        <div class="form-group">
+          <label>{{ 'betonozasiNaplo.uritesKezdete' | translate }}</label>
+          <input type="text" [(ngModel)]="formData.urites_kezdete" placeholder="HH:MM" />
+        </div>
+        
+        <div class="form-group">
+          <label>{{ 'betonozasiNaplo.uritesVege' | translate }}</label>
+          <input type="text" [(ngModel)]="formData.urites_vege" placeholder="HH:MM" />
+        </div>
+        
+        <div class="form-group">
+          <label>{{ 'betonozasiNaplo.idonTuliVarakozas' | translate }}</label>
+          <input type="number" [(ngModel)]="formData.idon_tuli_varakozas" placeholder="perc" />
+        </div>
+        
+        <div class="form-group">
+          <label>{{ 'betonozasiNaplo.elmeLetiMennyiseg' | translate }}</label>
+          <input type="number" step="0.001" [(ngModel)]="formData.elmeleti_mennyiseg" placeholder="m³" />
+        </div>
+        
+        <div class="form-group">
+          <label>{{ 'betonozasiNaplo.kertMennyiseg' | translate }}</label>
+          <input type="number" step="0.001" [(ngModel)]="formData.kert_mennyiseg" placeholder="m³" />
+        </div>
+        
+        <div class="form-group full-width">
+          <label>{{ 'betonozasiNaplo.adalekszerek' | translate }}</label>
+          <textarea [(ngModel)]="formData.adalekszerek" rows="2"></textarea>
+        </div>
+        
+        <div class="form-group full-width">
+          <label>{{ 'betonozasiNaplo.formalevalaszto' | translate }}</label>
+          <input type="text" [(ngModel)]="formData.formalevalaszto" />
+        </div>
+        
+        <div class="form-group full-width">
+          <label>{{ 'betonozasiNaplo.megjegyzes' | translate }}</label>
+          <textarea [(ngModel)]="formData.megjegyzes" rows="3"></textarea>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeModal()" [disabled]="saving">
+        {{ 'common.cancel' | translate }}
+      </button>
+      <button class="btn-primary" (click)="saveEntry()" [disabled]="saving">
+        {{ saving ? ('common.saving' | translate) : ('common.save' | translate) }}
+      </button>
+    </div>
+  </div>
+</div>

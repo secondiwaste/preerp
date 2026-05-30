@@ -1,7 +1,5 @@
 .content {
   padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
 }
 
 .card {
@@ -47,6 +45,7 @@ th {
   color: #666;
   font-size: 0.9rem;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 tbody tr:hover {
@@ -134,8 +133,16 @@ td:last-child {
   transition: background 0.2s;
   margin-left: 0.3rem;
   white-space: nowrap;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: auto;
+}
+
+.btn-small mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
 }
 
 .btn-small:first-child {

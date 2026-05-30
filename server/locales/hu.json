@@ -67,5 +67,62 @@
       "userDisabled": "Felhasználó sikeresen letiltva",
       "userEnabled": "Felhasználó sikeresen engedélyezve"
     }
+  },
+  "projects": {
+    "errors": {
+      "loadFailed": "Projektek betöltése sikertelen",
+      "notFound": "Projekt nem található",
+      "requiredFields": "Munkaszám és Munka megnevezése kötelező",
+      "munkaszamExists": "Ezzel a munkaszámmal már létezik projekt",
+      "createFailed": "Projekt létrehozása sikertelen",
+      "updateFailed": "Projekt frissítése sikertelen",
+      "deleteFailed": "Projekt törlése sikertelen"
+    },
+    "success": {
+      "created": "Projekt sikeresen létrehozva",
+      "updated": "Projekt sikeresen frissítve",
+      "deleted": "Projekt sikeresen törölve",
+      "closed": "Projekt sikeresen lezárva",
+      "reopened": "Projekt sikeresen újranyitva"
+    }
+  },
+  "elemcsoport": {
+    "name_required": "Elemcsoport név megadása kötelező",
+    "not_found": "Elemcsoport nem található",
+    "created_successfully": "Elemcsoport sikeresen létrehozva",
+    "updated_successfully": "Elemcsoport sikeresen frissítve",
+    "deleted_successfully": "Elemcsoport sikeresen törölve"
+  },
+  "item": {
+    "not_found": "Elem nem található",
+    "created_successfully": "Elem sikeresen létrehozva",
+    "updated_successfully": "Elem sikeresen frissítve",
+    "deleted_successfully": "Elem sikeresen törölve"
+  },
+  "betonozasiNaplo": {
+    "not_found": "Betonozási napló bejegyzés nem található",
+    "created_successfully": "Betonozási napló bejegyzés sikeresen létrehozva",
+    "updated_successfully": "Betonozási napló bejegyzés sikeresen frissítve",
+    "deleted_successfully": "Betonozási napló bejegyzés sikeresen törölve",
+    "datumRequired": "Dátum megadása kötelező"
+  },
+  "raktar": {
+    "not_found": "Raktár bevételezés nem található",
+    "created_successfully": "Raktár bevételezés sikeresen létrehozva",
+    "updated_successfully": "Raktár bevételezés sikeresen frissítve",
+    "deleted_successfully": "Raktár bevételezés sikeresen törölve",
+    "datumRequired": "Dátum megadása kötelező",
+    "megnevezesRequired": "Megnevezés megadása kötelező"
+  },
+  "raktarElem": {
+    "not_found": "Raktár elem nem található",
+    "created_successfully": "Raktár elem sikeresen létrehozva",
+    "updated_successfully": "Raktár elem sikeresen frissítve",
+    "deleted_successfully": "Raktár elem sikeresen törölve"
+  },
+  "common": {
+    "server_error": "Belső szerverhiba",
+    "forbidden": "Hozzáférés megtagadva",
+    "error": "Hiba történt"
   }
 }

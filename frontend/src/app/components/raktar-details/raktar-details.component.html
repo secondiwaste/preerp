@@ -1,0 +1,247 @@
+<div class="container">
+  <app-navbar></app-navbar>
+  
+  <div class="content">
+    <div class="card">
+      <div class="header">
+        <div>
+          <button class="btn-back" (click)="goBack()">
+            <mat-icon>arrow_back</mat-icon>
+            {{ 'common.back' | translate }}
+          </button>
+          <h2>{{ 'raktarDetails.title' | translate }}</h2>
+          <p class="subtitle" *ngIf="raktar">
+            {{ formatDate(raktar.datum) }}
+            <span *ngIf="raktar.megnevezes"> - {{ raktar.megnevezes }}</span>
+          </p>
+        </div>
+        <div class="btn-group">
+          <button 
+            *ngIf="canEdit && !isEditingRaktar" 
+            class="btn-primary" 
+            (click)="createNewElement()"
+          >
+            {{ 'raktarDetails.addElem' | translate }}
+          </button>
+          <button 
+            *ngIf="canEdit && !isEditingRaktar" 
+            class="btn-primary" 
+            (click)="toggleEditRaktar()"
+            [title]="'common.edit' | translate"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button 
+            *ngIf="isEditingRaktar" 
+            class="btn-primary" 
+            (click)="saveRaktar()" 
+            [disabled]="saving"
+          >
+            {{ saving ? ('common.saving' | translate) : ('common.save' | translate) }}
+          </button>
+          <button 
+            *ngIf="isEditingRaktar" 
+            class="btn-secondary" 
+            (click)="toggleEditRaktar()" 
+            [disabled]="saving"
+          >
+            {{ 'common.cancel' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Raktar Information Section -->
+      <div class="raktar-info-section" *ngIf="raktar">
+        <div class="details-grid">
+          <div class="detail-item">
+            <label>{{ 'raktar.datum' | translate }}</label>
+            <input 
+              *ngIf="isEditingRaktar" 
+              type="date" 
+              [(ngModel)]="raktarFormData.datum" 
+              class="form-input"
+            />
+            <div *ngIf="!isEditingRaktar" class="detail-value">{{ formatDate(raktar.datum) }}</div>
+          </div>
+
+          <div class="detail-item">
+            <label>{{ 'raktar.megnevezes' | translate }}</label>
+            <input 
+              *ngIf="isEditingRaktar" 
+              type="text" 
+              [(ngModel)]="raktarFormData.megnevezes" 
+              class="form-input"
+            />
+            <div *ngIf="!isEditingRaktar" class="detail-value">{{ raktar.megnevezes || '-' }}</div>
+          </div>
+
+          <div class="detail-item">
+            <label>{{ 'raktarDetails.szallitasiKoltseg' | translate }}</label>
+            <input 
+              *ngIf="isEditingRaktar" 
+              type="number" 
+              step="0.01"
+              [(ngModel)]="raktarFormData.szallitasi_koltseg" 
+              class="form-input"
+            />
+            <div *ngIf="!isEditingRaktar" class="detail-value">
+              {{ raktar.szallitasi_koltseg !== null && raktar.szallitasi_koltseg !== undefined ? (raktar.szallitasi_koltseg | number:'1.2-2') + ' Ft' : '-' }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <h3>{{ 'raktarDetails.elemek' | translate }}</h3>
+        </div>
+
+        <div *ngIf="loading" class="loading">{{ 'common.loading' | translate }}</div>
+        
+        <div *ngIf="!loading && elements.length > 0" class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th *ngIf="canEdit" class="actions-column">{{ 'common.actions' | translate }}</th>
+                <th class="col-megnevezes">{{ 'raktarDetails.megnevezes' | translate }}</th>
+                <th class="col-mennyiseg">{{ 'raktarDetails.mennyiseg' | translate }}</th>
+                <th class="col-mertekegyseg">{{ 'raktarDetails.mertekegyseg' | translate }}</th>
+                <th class="col-netto-egysegar">{{ 'raktarDetails.nettoEgysegar' | translate }}</th>
+                <th class="col-osszesen">{{ 'raktarDetails.osszesen' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let elem of elements">
+                <!-- Actions -->
+                <td *ngIf="canEdit" class="actions-column">
+                  <button 
+                    class="btn-small btn-danger" 
+                    (click)="deleteElement(elem)"
+                    [title]="'common.delete' | translate"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+                
+                <!-- Megnevezés -->
+                <td class="col-megnevezes">
+                  <div 
+                    class="table-cell" 
+                    *ngIf="canEdit && !isEditingCell(elem.id, 'megnevezes')"
+                    (click)="startEditCell(elem.id, 'megnevezes')"
+                  >
+                    {{ elem.megnevezes }}
+                  </div>
+                  <input 
+                    *ngIf="canEdit && isEditingCell(elem.id, 'megnevezes')"
+                    type="text" 
+                    [(ngModel)]="elem.megnevezes" 
+                    (blur)="stopEditCell(elem, 'megnevezes')"
+                    (keydown)="onCellKeydown($event, elem, 'megnevezes')"
+                    [attr.data-elem-id]="elem.id"
+                    [attr.data-col]="'megnevezes'"
+                    class="table-input"
+                  />
+                  <span *ngIf="!canEdit">{{ elem.megnevezes }}</span>
+                </td>
+                
+                <!-- Mennyiség -->
+                <td class="col-mennyiseg">
+                  <div 
+                    class="table-cell" 
+                    *ngIf="canEdit && !isEditingCell(elem.id, 'mennyiseg')"
+                    (click)="startEditCell(elem.id, 'mennyiseg')"
+                  >
+                    {{ elem.mennyiseg !== null && elem.mennyiseg !== undefined ? elem.mennyiseg : '' }}
+                  </div>
+                  <input 
+                    *ngIf="canEdit && isEditingCell(elem.id, 'mennyiseg')"
+                    type="number" 
+                    step="0.001"
+                    [(ngModel)]="elem.mennyiseg" 
+                    (blur)="stopEditCell(elem, 'mennyiseg')"
+                    (keydown)="onCellKeydown($event, elem, 'mennyiseg')"
+                    [attr.data-elem-id]="elem.id"
+                    [attr.data-col]="'mennyiseg'"
+                    class="table-input"
+                  />
+                  <span *ngIf="!canEdit">{{ elem.mennyiseg !== null && elem.mennyiseg !== undefined ? elem.mennyiseg : '' }}</span>
+                </td>
+                
+                <!-- Mértékegység -->
+                <td class="col-mertekegyseg">
+                  <div 
+                    class="table-cell" 
+                    *ngIf="canEdit && !isEditingCell(elem.id, 'mertekegyseg')"
+                    (click)="startEditCell(elem.id, 'mertekegyseg')"
+                  >
+                    {{ elem.mertekegyseg !== null && elem.mertekegyseg !== undefined ? elem.mertekegyseg : '' }}
+                  </div>
+                  <input 
+                    *ngIf="canEdit && isEditingCell(elem.id, 'mertekegyseg')"
+                    type="text" 
+                    [(ngModel)]="elem.mertekegyseg" 
+                    (blur)="stopEditCell(elem, 'mertekegyseg')"
+                    (keydown)="onCellKeydown($event, elem, 'mertekegyseg')"
+                    [attr.data-elem-id]="elem.id"
+                    [attr.data-col]="'mertekegyseg'"
+                    class="table-input"
+                  />
+                  <span *ngIf="!canEdit">{{ elem.mertekegyseg !== null && elem.mertekegyseg !== undefined ? elem.mertekegyseg : '' }}</span>
+                </td>
+                
+                <!-- Nettó egységár -->
+                <td class="col-netto-egysegar">
+                  <div 
+                    class="table-cell" 
+                    *ngIf="canEdit && !isEditingCell(elem.id, 'netto_egysegar')"
+                    (click)="startEditCell(elem.id, 'netto_egysegar')"
+                  >
+                    {{ elem.netto_egysegar !== null && elem.netto_egysegar !== undefined ? (elem.netto_egysegar | number:'1.2-2') + ' Ft' : '' }}
+                  </div>
+                  <input 
+                    *ngIf="canEdit && isEditingCell(elem.id, 'netto_egysegar')"
+                    type="number" 
+                    step="0.01"
+                    [(ngModel)]="elem.netto_egysegar" 
+                    (blur)="stopEditCell(elem, 'netto_egysegar')"
+                    (keydown)="onCellKeydown($event, elem, 'netto_egysegar')"
+                    [attr.data-elem-id]="elem.id"
+                    [attr.data-col]="'netto_egysegar'"
+                    class="table-input"
+                  />
+                  <span *ngIf="!canEdit">{{ elem.netto_egysegar !== null && elem.netto_egysegar !== undefined ? (elem.netto_egysegar | number:'1.2-2') + ' Ft' : '' }}</span>
+                </td>
+                
+                <!-- Összesen (számított) -->
+                <td class="col-osszesen">
+                  <div class="calculated-value">
+                    {{ calculateTotal(elem) > 0 ? (calculateTotal(elem) | number:'1.2-2') + ' Ft' : '' }}
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <!-- Összesen sor -->
+              <tr class="total-row">
+                <td *ngIf="canEdit"></td>
+                <td colspan="4" class="total-label">{{ 'raktarDetails.osszesitett' | translate }}</td>
+                <td class="total-value">{{ calculateGrandTotal() | number:'1.2-2' }} Ft</td>
+              </tr>
+              <!-- Szállítási költséggel sor -->
+              <tr class="total-with-shipping-row">
+                <td *ngIf="canEdit"></td>
+                <td colspan="4" class="total-label">{{ 'raktarDetails.szallitassalEgyutt' | translate }}</td>
+                <td class="total-value">{{ calculateGrandTotalWithShipping() | number:'1.2-2' }} Ft</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        
+        <div *ngIf="!loading && elements.length === 0" class="no-data">
+          {{ 'raktarDetails.noElemek' | translate }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

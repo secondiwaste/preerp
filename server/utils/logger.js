@@ -11,6 +11,15 @@ class Logger {
   };
 
   static configuredLevel = null;
+  static consoleLoggingDisabled = null;
+
+  // Check if console logging is disabled via environment variable
+  static isConsoleLoggingDisabled() {
+    if (this.consoleLoggingDisabled === null) {
+      this.consoleLoggingDisabled = process.env.DISABLE_CONSOLE_LOGS === 'true';
+    }
+    return this.consoleLoggingDisabled;
+  }
 
   // Get configured log level from environment
   static getConfiguredLevel() {
@@ -33,12 +42,13 @@ class Logger {
   static async log(level, category, message, options = {}) {
     const { userId = null, username = null, ipAddress = null, metadata = null, consoleOnly = false } = options;
 
-    // Log to console only if level is high enough
-    if (this.shouldLog(level)) {
+    // Log to console only if enabled and level is high enough
+    if (!this.isConsoleLoggingDisabled() && this.shouldLog(level)) {
       const prefix = `[${level}]${category ? ` [${category}]` : ''}`;
-      console.log(`${prefix} ${message}`);
+      const userInfo = username ? ` [${username}]` : '';
+      console.log(`${prefix}${userInfo} ${message}`);
       if (metadata) {
-        console.log(`${prefix} Metadata:`, metadata);
+        console.log(`${prefix}${userInfo} Metadata:`, metadata);
       }
     }
 
@@ -56,8 +66,10 @@ class Logger {
         });
       } catch (error) {
         // Don't throw - logging should never break the app
-        // Always show database errors regardless of log level
-        console.error('[ERROR] [LOGGER] Failed to write to database:', error.message);
+        // Only show database errors if console logging is enabled
+        if (!this.isConsoleLoggingDisabled()) {
+          console.error('[ERROR] [LOGGER] Failed to write to database:', error.message);
+        }
       }
     }
   }
