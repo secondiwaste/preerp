@@ -436,6 +436,36 @@ export class BetonozasiNaploComponent implements OnInit, AfterViewInit {
       if (input) {
         input.focus();
         input.select();
+        
+        // Initialize jQuery autocomplete for rendszam field
+        if (column === 'rendszam' && typeof $.fn.autocomplete !== 'undefined') {
+          const $input = $(input);
+          
+          // Destroy existing autocomplete if any
+          if ($input.autocomplete('instance')) {
+            $input.autocomplete('destroy');
+          }
+          
+          // Initialize autocomplete
+          $input.autocomplete({
+            source: this.uniqueRendszamok,
+            minLength: 0,
+            delay: 0,
+            autoFocus: true,
+            select: (event: any, ui: any) => {
+              // Update Angular model
+              if (entry) {
+                entry.rendszam = ui.item.value;
+              }
+              return false;
+            }
+          });
+          
+          // Trigger search to show all items immediately
+          setTimeout(() => {
+            $input.autocomplete('search', '');
+          }, 50);
+        }
       }
     }, 100);
   }
@@ -447,6 +477,17 @@ export class BetonozasiNaploComponent implements OnInit, AfterViewInit {
     
     if (currentValue !== originalValue) {
       this.autoSaveEntry(entry, column);
+    }
+    
+    // Cleanup jQuery autocomplete for rendszam field
+    if (column === 'rendszam') {
+      const input = document.querySelector(`input[data-entry-id="${entry.id}"][data-col="${column}"]`) as HTMLInputElement;
+      if (input) {
+        const $input = $(input);
+        if ($input.autocomplete('instance')) {
+          $input.autocomplete('destroy');
+        }
+      }
     }
     
     // Delay clearing to allow click event to fire first
@@ -461,6 +502,16 @@ export class BetonozasiNaploComponent implements OnInit, AfterViewInit {
     const key = event.key;
     
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(key)) {
+      // Check if jQuery autocomplete menu is open (for rendszam field)
+      if (column === 'rendszam') {
+        const input = event.target as HTMLInputElement;
+        const $input = $(input);
+        if ($input.autocomplete('instance') && $input.autocomplete('widget').is(':visible')) {
+          // Autocomplete menu is open, let it handle the arrow keys
+          return;
+        }
+      }
+      
       event.preventDefault();
       
       // Save current cell before moving if value changed
@@ -498,6 +549,16 @@ export class BetonozasiNaploComponent implements OnInit, AfterViewInit {
         this.startEditCell(newEntry.id, newColumn);
       }, 50);
     } else if (key === 'Enter') {
+      // Check if jQuery autocomplete menu is open (for rendszam field)
+      if (column === 'rendszam') {
+        const input = event.target as HTMLInputElement;
+        const $input = $(input);
+        if ($input.autocomplete('instance') && $input.autocomplete('widget').is(':visible')) {
+          // Autocomplete menu is open, let it handle the Enter key for selection
+          return;
+        }
+      }
+      
       event.preventDefault();
       
       // Save and move down to next row, same column

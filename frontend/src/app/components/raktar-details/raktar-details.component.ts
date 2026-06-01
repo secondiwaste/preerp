@@ -131,7 +131,28 @@ export class RaktarDetailsComponent implements OnInit {
       next: (response) => {
         this.loading = false;
         if (response.success && response.data) {
-          this.elements = response.data.elements;
+          const newElements = response.data.elements;
+          
+          // Smart merge: keep existing references where possible
+          const existingMap = new Map(this.elements.map(e => [e.id, e]));
+          const newIds = new Set(newElements.map(e => e.id));
+          
+          // Update or add elements
+          const mergedElements = newElements.map(newElem => {
+            const existing = existingMap.get(newElem.id);
+            if (existing) {
+              // Update existing element properties
+              Object.assign(existing, newElem);
+              return existing;
+            } else {
+              // New element
+              return newElem;
+            }
+          });
+          
+          // Replace array content while preserving reference
+          this.elements.length = 0;
+          this.elements.push(...mergedElements);
         }
       },
       error: (error) => {
@@ -345,5 +366,9 @@ export class RaktarDetailsComponent implements OnInit {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
+  }
+
+  trackByElemId(index: number, elem: RaktarElem): number {
+    return elem.id;
   }
 }

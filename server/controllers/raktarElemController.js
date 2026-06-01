@@ -34,7 +34,7 @@ exports.createRaktarElem = async (req, res) => {
     
     const element = await RaktarElem.create(data);
     
-    Logger.info(`Raktar element created: ${element.id} by user ${req.user.username}`);
+    Logger.info(`Raktar element created: ID=${element.id}, raktar_id=${element.raktar_id}, megnevezes="${element.megnevezes}", mennyiseg=${element.mennyiseg}, mertekegyseg="${element.mertekegyseg}", netto_egysegar=${element.netto_egysegar}, by user ${req.user.username}`);
     
     res.status(201).json({
       success: true,
@@ -66,7 +66,9 @@ exports.updateRaktarElem = async (req, res) => {
     
     const updatedElement = await RaktarElem.update(req.params.id, req.body);
     
-    Logger.info(`Raktar element updated: ${req.params.id} by user ${req.user.username}`);
+    const updatedFields = Object.keys(req.body).filter(k => ['megnevezes', 'mennyiseg', 'mertekegyseg', 'netto_egysegar'].includes(k));
+    const changes = updatedFields.map(field => `${field}: "${element[field]}" -> "${updatedElement[field]}"`).join(', ');
+    Logger.info(`Raktar element updated: ID=${req.params.id}, raktar_id=${element.raktar_id}, changes=[${changes}], by user ${req.user.username}`);
     
     res.json({
       success: true,
@@ -98,7 +100,7 @@ exports.deleteRaktarElem = async (req, res) => {
     
     await RaktarElem.deleteById(req.params.id);
     
-    Logger.info(`Raktar element deleted: ${req.params.id} by user ${req.user.username}`);
+    Logger.info(`Raktar element deleted: ID=${req.params.id}, raktar_id=${element.raktar_id}, megnevezes="${element.megnevezes}", mennyiseg=${element.mennyiseg}, mertekegyseg="${element.mertekegyseg}", netto_egysegar=${element.netto_egysegar}, by user ${req.user.username}`);
     
     res.json({
       success: true,

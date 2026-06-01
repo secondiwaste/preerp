@@ -130,7 +130,6 @@
                   (keydown)="onCellKeydown($event, entry, 'rendszam')"
                   [attr.data-entry-id]="entry.id"
                   [attr.data-col]="'rendszam'"
-                  [attr.list]="'rendszam-autocomplete'"
                   class="table-input"
                 />
                 <span *ngIf="!canEdit">{{ entry.rendszam }}</span>
@@ -602,11 +601,6 @@
       <div *ngIf="!loading && entries.length === 0" class="no-data">
         {{ 'betonozasiNaplo.noEntries' | translate }}
       </div>
-      
-      <!-- Autocomplete datalist for rendszam -->
-      <datalist id="rendszam-autocomplete">
-        <option *ngFor="let rendszam of uniqueRendszamok" [value]="rendszam">
-      </datalist>
     </div>
   </div>
 </div>

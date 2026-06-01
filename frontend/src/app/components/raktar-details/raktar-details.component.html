@@ -111,7 +111,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let elem of elements">
+              <tr *ngFor="let elem of elements; trackBy: trackByElemId">
                 <!-- Actions -->
                 <td *ngIf="canEdit" class="actions-column">
                   <button 
