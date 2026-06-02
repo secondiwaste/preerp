@@ -1,6 +1,6 @@
 const Elemcsoport = require('../models/Elemcsoport');
 const Project = require('../models/Project');
-const Logger = require('../utils/Logger');
+const Logger = require('../utils/logger');
 const i18n = require('../config/i18n');
 
 // Get all elemcsoport for a project

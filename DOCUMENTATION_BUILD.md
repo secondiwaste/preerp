@@ -2,7 +2,7 @@
 
 ## Áttekintés
 
-A PreERP rendszer tartalmaz egy automatizált dokumentáció build folyamatot, amely a markdown formátumú felhasználói kézikönyvet HTML formátumba konvertálja és elérhetővé teszi a frontend alkalmazáson keresztül.
+A PREerp rendszer tartalmaz egy automatizált dokumentáció build folyamatot, amely a markdown formátumú felhasználói kézikönyvet HTML formátumba konvertálja és elérhetővé teszi a frontend alkalmazáson keresztül.
 
 ## Fájlok és Komponensek
 

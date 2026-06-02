@@ -1,6 +1,6 @@
 # Felhasználói kézikönyv
 
-Ez a dokumentum tartalmazza a PreERP rendszer felhasználói útmutatóját.
+Ez a dokumentum tartalmazza a PREerp rendszer felhasználói útmutatóját.
 
 ---
 
